@@ -1,0 +1,20 @@
+{
+  "name": "how-do-i-calculate-if-an-integer-is-odd",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "dev": "node scripts/dev.mjs",
+    "test": "node --test test/*.test.mjs",
+    "check": "npm test && npm run build && node scripts/check.mjs",
+    "deploy": "wrangler pages deploy dist --project-name=howdoicalculateifanintegerisodd"
+  },
+  "engines": {
+    "node": ">=24"
+  },
+  "devDependencies": {
+    "marked": "18.0.13",
+    "wrangler": "4.136.1"
+  }
+}

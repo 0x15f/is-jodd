@@ -1,0 +1,338 @@
+[
+  {
+    "slug": "what-is-jev",
+    "category": "jev",
+    "title": "What is Jev? Typed AI decisions, explained",
+    "description": "An independent introduction to TypeSafe’s Jev model, typed questions, and the deliberately impractical is-jodd example.",
+    "summary": "Jev returns structured judgments that an application can inspect. is-jodd uses one of those judgments to ask whether an integer is odd.",
+    "body": "Jev is TypeSafe’s model for turning supplied context into typed judgments. You give it information and a question with a defined answer shape. Your application receives a value it can inspect, rather than a conversational explanation. TypeSafe calls this approach System One. This is an independent explanation from the publisher of is-jodd, not official TypeSafe documentation. [TypeSafe introduction](https://docs.typesafe.ai/introduction)\n\n## Start with the decision your program needs\n\nImagine an application reviewing incoming messages. One part of the program needs to know whether a message asks to reschedule an appointment. Another needs a category such as scheduling, billing, or something else. Those are different decisions, even though they concern the same message.\n\nThe useful design exercise is to write the receiving code first. Will it branch on a yes/no answer, select one route, or rank something along a rubric? A precise receiving interface makes it easier to notice when the proposed question actually contains several unrelated requirements. It also gives you something concrete to test before connecting any model.\n\n## Understand the three pieces\n\nThe input is called the state. The questions describe what should be judged. The answers preserve the question identifiers, so the application can find each result. TypeSafe documents Noul for yes/no judgments, Choice for selecting an option, and Score for a rubric. [Question primitives](https://docs.typesafe.ai/primitives)\n\nHere is an original planning example, not a recorded API result:\n\n```text\nState: a visitor's appointment message\nQuestion: does the visitor request a different date?\nApplication action: offer the rescheduling screen\nFallback: leave the existing appointment unchanged\n```\n\nNotice that the proposed action is deliberately limited. Recognizing a request and actually changing an appointment are separate responsibilities. The surrounding application should still check the appointment identifier, authorization, and available dates.\n\n## Where is-jodd fits\n\nis-jodd is a joke package that sends a safe integer to Jev and asks whether it is odd. Its implementation converts a Noul value above 0.5 into `true`. It demonstrates a small asynchronous interface, but mathematical parity already has an exact local solution: `n % 2 !== 0` for a validated safe integer.\n\nThat mismatch is the joke. The interesting engineering questions concern request design, error handling, and honest measurement, not whether a remote model is necessary to recognize the number three. The package also has a restrictive custom JODD-1T license requiring $1 trillion and written permission before use unless separate terms are granted.\n\nRead the [API quickstart](/jev/jev-api-quickstart/) to examine the request shape, or use the [parity calculator](/) when you simply need an answer. Our [benchmark article](/jev/jev-parity-benchmarks/) explains what we measured without turning one experiment into a performance promise.",
+    "related": [
+      "jev-api-quickstart",
+      "jev-noul-boolean-questions",
+      "when-not-to-use-ai-for-math"
+    ],
+    "sources": [
+      {
+        "title": "TypeSafe introduction",
+        "url": "https://docs.typesafe.ai/introduction"
+      },
+      {
+        "title": "TypeSafe question primitives",
+        "url": "https://docs.typesafe.ai/primitives"
+      },
+      {
+        "title": "is-jodd implementation",
+        "url": "https://github.com/0x15f/is-jodd/blob/42bc5d3740af23b47cfeaaa557cfa0499e2bf333/index.js"
+      },
+      {
+        "title": "JODD-1T license",
+        "url": "https://github.com/0x15f/is-jodd/blob/42bc5d3740af23b47cfeaaa557cfa0499e2bf333/LICENSE"
+      }
+    ]
+  },
+  {
+    "slug": "jev-api-quickstart",
+    "category": "jev",
+    "title": "Jev API quickstart with JavaScript fetch",
+    "description": "Build a small Jev request with native fetch, inspect a Noul answer, and keep credentials on the server.",
+    "summary": "A direct HTTP example shows authentication, the request body, cancellation, response validation, and the boundary between an AI answer and application policy.",
+    "body": "A minimal Jev integration can use native JavaScript `fetch`. TypeSafe documents a JSON POST to `https://api.typesafe.ai/v1/systemone`, authenticated with a bearer API key. The example below uses the same question as is-jodd while leaving the HTTP response visible for inspection. This independent guide is not published by TypeSafe. [Official quickstart](https://docs.typesafe.ai/introduction/quickstart)\n\n## Prepare the environment\n\nUse a server-side script and supply `TYPESAFE_API_KEY` through its environment. Do not paste a real credential into this example, a public repository, or browser code. This article does not provide an API key, account entitlement, or a promise about current API pricing.\n\nThe following example is instructional; no response value is assumed. Running it makes a real remote request.\n\n```js\nconst key = process.env.TYPESAFE_API_KEY;\nif (!key?.trim()) throw new Error('Missing API key');\n\nconst response = await fetch(\n  'https://api.typesafe.ai/v1/systemone',\n  {\n    method: 'POST',\n    headers: {\n      Authorization: `Bearer ${key}`,\n      'Content-Type': 'application/json',\n    },\n    body: JSON.stringify({\n      model: 'jev-latest',\n      state: '37',\n      questions: {\n        odd: {\n          type: 'noul',\n          instructions: 'Is this integer odd?',\n        },\n      },\n    }),\n    signal: AbortSignal.timeout(5000),\n  },\n);\nif (!response.ok) throw new Error(`HTTP ${response.status}`);\nconst data = await response.json();\nconst answer = data?.answers?.odd;\nconst p = answer?.noul;\nif (answer?.type !== 'noul' || typeof p !== 'number'\n    || !(p >= 0 && p <= 1)) {\n  throw new Error('Invalid oddness answer');\n}\nconsole.log({ odd: p > 0.5 });\n```\n\n## Keep request design separate from decision policy\n\nThe question asks for a judgment. The final comparison chooses how the application interprets it. Changing the cutoff would change that policy, not the definition of an odd integer. The cutoff here follows is-jodd’s implementation; it is not an accuracy guarantee.\n\nValidate both the answer type and the numeric range. Checking only whether a property exists would allow the wrong kind of payload to reach your application. In the example, missing properties, numeric strings, out-of-range values, and `NaN` all fail the guard. An unsuccessful request remains an error rather than silently becoming an even number.\n\n## Decide what to retain\n\nBefore a live run, print the serialized body without the authorization header and inspect it against your intended question. Start with one known input instead of an uncontrolled loop. To test malformed responses, use invented local fixtures rather than deliberately spending requests on failures. This separates request debugging from answer decoding and makes each real call serve a clear purpose.\n\nFor an experiment, keep the input, question, elapsed time, and expected mathematical answer together. Store credentials separately from those records. Avoid logging entire request headers when debugging a failed call. If you need details that a convenience wrapper discards, inspect the direct response instead of guessing what happened inside the service.\n\nFor ordinary parity, the [calculator](/) or validated local arithmetic avoids the remote dependency. For package-specific setup, see [getting started with is-jodd](/jev/is-jodd-getting-started/), including its restrictive $1 trillion license requirement. For failures, continue with [errors and timeouts](/jev/jev-api-errors-and-timeouts/).",
+    "related": [
+      "is-jodd-getting-started",
+      "jev-api-errors-and-timeouts",
+      "jev-noul-boolean-questions"
+    ],
+    "sources": [
+      {
+        "title": "TypeSafe API quickstart",
+        "url": "https://docs.typesafe.ai/introduction/quickstart"
+      },
+      {
+        "title": "is-jodd request and validation code",
+        "url": "https://github.com/0x15f/is-jodd/blob/42bc5d3740af23b47cfeaaa557cfa0499e2bf333/index.js"
+      },
+      {
+        "title": "JODD-1T license",
+        "url": "https://github.com/0x15f/is-jodd/blob/42bc5d3740af23b47cfeaaa557cfa0499e2bf333/LICENSE"
+      }
+    ]
+  },
+  {
+    "slug": "jev-noul-boolean-questions",
+    "category": "jev",
+    "title": "Jev Noul questions: turn a probability into a boolean",
+    "description": "Understand a Jev Noul result, validate its shape, and make the boolean threshold explicit in your code.",
+    "summary": "Noul describes a yes/no judgment with a number from zero to one. A boolean requires an additional decision rule.",
+    "body": "A Noul question asks Jev for a yes/no judgment and returns a number between zero and one. TypeSafe describes that number as the probability of yes. A value near the middle expresses a different judgment from a value near either endpoint. Noul does not carry a separate `confidence` field. [Official Noul reference](https://docs.typesafe.ai/primitives/noul)\n\nThis is an independent guide from is-jodd’s publisher. The examples below explain a data contract; their invented values are not measured Jev responses.\n\n## The number and the boolean are different values\n\nis-jodd asks whether an integer is odd, then applies a strict comparison:\n\n```js\nconst illustrative = [0, 0.49, 0.5, 0.51, 1];\nconsole.log(illustrative.map(p => p > 0.5));\n// [false, false, false, true, true]\n```\n\nThe boundary matters. Exactly 0.5 becomes `false` in this package. Replacing `>` with `>=` would change that behavior. Neither operator makes the underlying model more accurate, and neither changes mathematical oddness. They only change how the application converts a numeric result into a JavaScript boolean.\n\nWhen documenting an integration, write the comparison down instead of saying it returns “yes when confident.” That phrase leaves both the threshold and the treatment of a tie unspecified. An explicit rule is easier for another developer to review and for a test to exercise.\n\n## Validate before comparing\n\nA defensive decoder can reject malformed data before evaluating the cutoff:\n\n```js\nfunction decodeIllustrativeAnswer(answer) {\n  const p = answer?.noul;\n  if (answer?.type !== 'noul' || typeof p !== 'number'\n      || !(p >= 0 && p <= 1)) {\n    throw new Error('Expected a valid Noul answer');\n  }\n  return p > 0.5;\n}\n```\n\nThis example follows the validation in is-jodd’s source. A string containing digits should not be accepted merely because JavaScript can coerce it during a comparison. Likewise, a missing answer should not quietly fall through to `false`. Those situations concern the response contract, not a legitimate negative judgment.\n\n## Decide whether losing information is acceptable\n\nA boolean erases the distance from the boundary. After converting both 0.51 and 0.99 to `true`, a caller cannot distinguish them from the boolean alone. That simplification suits the tiny is-jodd interface, but an experiment investigating model behavior needs to retain the original numbers elsewhere.\n\nFor mathematical parity, use the known answer as an external check. The [calculator](/) illustrates the result without needing an AI confidence threshold. For other integrations, evaluate the cutoff against examples from the actual task instead of inheriting a number from this joke package.\n\nContinue with [confidence and correctness](/jev/jev-confidence-and-correctness/) or compare [Choice with Noul](/jev/jev-choice-vs-noul/). Package use remains subject to the custom JODD-1T license, including its $1 trillion fee and written-permission requirement unless waived separately.",
+    "related": [
+      "jev-confidence-and-correctness",
+      "jev-choice-vs-noul",
+      "is-jodd-getting-started"
+    ],
+    "sources": [
+      {
+        "title": "TypeSafe Noul reference",
+        "url": "https://docs.typesafe.ai/primitives/noul"
+      },
+      {
+        "title": "is-jodd threshold and validation",
+        "url": "https://github.com/0x15f/is-jodd/blob/42bc5d3740af23b47cfeaaa557cfa0499e2bf333/index.js"
+      },
+      {
+        "title": "JODD-1T license",
+        "url": "https://github.com/0x15f/is-jodd/blob/42bc5d3740af23b47cfeaaa557cfa0499e2bf333/LICENSE"
+      }
+    ]
+  },
+  {
+    "slug": "jev-choice-vs-noul",
+    "category": "jev",
+    "title": "Jev Choice vs Noul: pick the answer shape your code needs",
+    "description": "Compare categorical Choice answers with Noul yes/no judgments using is-jeven and is-jodd as a concrete example.",
+    "summary": "Choice selects an option; Noul evaluates a yes/no proposition. The difference changes the payload and the decoder, but does not prove a speed advantage.",
+    "body": "Choice and Noul offer different answer shapes. TypeSafe documents Choice as selecting from named options, with an answer containing the selected option, option probabilities, and confidence. Noul represents a yes/no judgment with a single numeric value. Decide which information the caller needs before choosing the question type. This is an unofficial comparison. [Choice reference](https://docs.typesafe.ai/primitives/choice)\n\n## Compare two concrete implementations\n\nis-jeven 1.0.0 asks whether a number is even using a Choice question whose options are the strings `true` and `false`. Its decoder checks the selected string and returns a JavaScript boolean. is-jodd 1.0.0 asks whether the number is odd using Noul, then returns whether the numeric answer exceeds 0.5.\n\nThese are excerpts of the question definitions, shown to compare the contracts:\n\n```js\nconst evenQuestion = {\n  type: 'choice',\n  instructions: 'Is this number even?',\n  criteria: { true: null, false: null },\n};\n\nconst oddQuestion = {\n  type: 'noul',\n  instructions: 'Is this integer odd?',\n};\n```\n\nThe public boolean interfaces look similar, but their requests and internal decoders differ. A benchmark comparing the complete packages therefore changes more than the presence of a negation operator.\n\n## Choose according to the decision\n\nSuppose an original application needs to label a calendar item as meeting, reminder, or unavailable time. Those named outcomes suggest a categorical contract. If it only needs to ask whether the item contains a meeting link, a yes/no contract may be sufficient. These are design examples, not claims about Jev’s accuracy on calendar data.\n\nWrite down the output your downstream function actually consumes. If it immediately collapses several categories into one boolean, investigate whether those categories serve another purpose. Conversely, if it needs to display or analyze individual categories, collapsing everything early can discard useful information.\n\nAlso decide how to represent a failed request. Neither a missing Choice option nor a malformed Noul number should become a normal business answer merely to satisfy a boolean interface.\n\n## Measure the whole change honestly\n\nOur recorded package comparison found 51 fewer serialized request-body bytes for is-jodd across its tested inputs. The live experiment did not establish a consistent latency advantage. That distinction prevents a reasonable schema simplification from turning into an unsupported claim that one primitive is universally faster.\n\nThe [benchmark results](/jev/jev-parity-benchmarks/) explain the paired measurements and their limits. The [smaller requests article](/jev/smaller-jev-requests/) separates JSON bytes from download size and elapsed time. For exact parity, use the [calculator](/) or local arithmetic.\n\nBoth packages have zero runtime dependencies. is-jodd additionally carries its own restrictive JODD-1T terms: $1 trillion and written permission before use unless separate terms are granted. Its availability as an npm package does not make those terms MIT or permissive.",
+    "related": [
+      "jev-noul-boolean-questions",
+      "smaller-jev-requests",
+      "is-jodd-vs-is-jeven"
+    ],
+    "sources": [
+      {
+        "title": "TypeSafe Choice reference",
+        "url": "https://docs.typesafe.ai/primitives/choice"
+      },
+      {
+        "title": "is-jodd implementation",
+        "url": "https://github.com/0x15f/is-jodd/blob/42bc5d3740af23b47cfeaaa557cfa0499e2bf333/index.js"
+      },
+      {
+        "title": "Recorded package comparison",
+        "url": "https://github.com/0x15f/is-jodd/blob/42bc5d3740af23b47cfeaaa557cfa0499e2bf333/benchmark/RESULTS.md"
+      },
+      {
+        "title": "JODD-1T license",
+        "url": "https://github.com/0x15f/is-jodd/blob/42bc5d3740af23b47cfeaaa557cfa0499e2bf333/LICENSE"
+      }
+    ]
+  },
+  {
+    "slug": "is-jodd-getting-started",
+    "category": "jev",
+    "title": "Getting started with is-jodd: API, requirements, and the joke",
+    "description": "Read the is-jodd contract before using it: Node 24+, API credentials, safe integers, async results, and its custom restrictive license.",
+    "summary": "is-jodd wraps one Jev request in an async isOdd function. Read the license first, then understand inputs, cancellation, and failure handling.",
+    "body": "is-jodd is a deliberately impractical npm package: it asks Jev whether a safe integer is odd. The useful learning material is the small API wrapper and its measured tradeoffs. For normal arithmetic, `n % 2 !== 0` already answers the question locally. This guide is written by the package publisher and is not official TypeSafe documentation.\n\n## Read the license before using the package\n\nis-jodd uses the custom JODD-1T license, not MIT. Its stated terms require $1 trillion and written permission before use, execution, copying, modification, or redistribution unless the copyright holder grants separate terms. Reading the documentation is free. Installation or receipt does not automatically create a charge or debt. Review the [actual license](https://github.com/0x15f/is-jodd/blob/42bc5d3740af23b47cfeaaa557cfa0499e2bf333/LICENSE), rather than treating a package installation command as permission.\n\nThe following describes the interface for readers with appropriate permission. It is not a recommendation to replace normal parity checks with a network service.\n\n## Supply the runtime and credential\n\nThe package declares Node.js 24 or newer. It exports the named async function `isOdd`. An API key can come from `TYPESAFE_API_KEY` or from the `apiKey` option; an explicitly supplied option takes precedence. Keep real keys out of committed examples and client-side bundles.\n\n```js\nimport { isOdd } from 'is-jodd';\n\nconst result = await isOdd(37, {\n  signal: AbortSignal.timeout(5000),\n});\nconsole.log(result);\n```\n\nThis call makes a real request if credentials are configured. The example does not promise which boolean a model will return. The package supplies the question, interprets the response, and exposes cancellation through the provided signal.\n\n## Understand accepted inputs\n\nInputs must pass `Number.isSafeInteger`. Zero and negative safe integers are accepted. A numeric string, fraction, `NaN`, infinity, or BigInt is not accepted. If your input begins as form text, validate and convert it deliberately before calling the function; do not assume the package performs general input parsing.\n\nThe returned promise can reject because of invalid input, a missing key, a failed HTTP response, cancellation, or malformed answer data. A rejection does not mean the integer is even. Callers should handle that failure separately from a resolved `false`.\n\n## Decide what belongs in your application\n\nThe wrapper returns a boolean, not the raw probability or the server’s model metadata. Its strict cutoff is greater than 0.5. If you need those underlying details for an experiment, the [direct API quickstart](/jev/jev-api-quickstart/) shows where to inspect the response.\n\nOur [package comparison](/jev/is-jodd-vs-is-jeven/) documents a smaller runtime entry without claiming faster live requests. The [calculator](/) provides a practical parity answer, and [errors and timeouts](/jev/jev-api-errors-and-timeouts/) explains the failure cases worth distinguishing in asynchronous code.",
+    "related": [
+      "jev-api-quickstart",
+      "jev-api-errors-and-timeouts",
+      "is-jodd-vs-is-jeven"
+    ],
+    "sources": [
+      {
+        "title": "is-jodd package documentation",
+        "url": "https://github.com/0x15f/is-jodd/blob/42bc5d3740af23b47cfeaaa557cfa0499e2bf333/README.md"
+      },
+      {
+        "title": "is-jodd implementation",
+        "url": "https://github.com/0x15f/is-jodd/blob/42bc5d3740af23b47cfeaaa557cfa0499e2bf333/index.js"
+      },
+      {
+        "title": "JODD-1T license",
+        "url": "https://github.com/0x15f/is-jodd/blob/42bc5d3740af23b47cfeaaa557cfa0499e2bf333/LICENSE"
+      }
+    ]
+  },
+  {
+    "slug": "is-jodd-vs-is-jeven",
+    "category": "jev",
+    "title": "is-jodd vs is-jeven: smaller runtime, no proven speed win",
+    "description": "Compare the actual is-jodd 1.0.0 and is-jeven 1.0.0 interfaces, package sizes, and live benchmark results.",
+    "summary": "The oddness wrapper has a smaller JavaScript entry and request body. Its complete archive is larger, and its live benchmark did not establish lower latency.",
+    "body": "is-jodd asks Jev whether an integer is odd. is-jeven asks whether it is even. For callers comparing oddness, the relevant expressions are `await isOdd(n)` and `!(await isEven(n))`. Both depend on a remote model; neither should replace exact local arithmetic when correctness is the goal.\n\nThis is a comparison from is-jodd’s publisher, not an independent laboratory or official TypeSafe statement. The figures below describe version 1.0.0 of both packages and our recorded experiment.\n\n## The shared public contract\n\nBoth wrappers accept a safe integer, use an API key, support an abort signal, and resolve to a boolean. Both have zero runtime dependencies. The important implementation difference is the question: is-jeven uses Choice with evenness options, while is-jodd uses Noul with a strict probability cutoff above 0.5 for oddness.\n\nThe negation must happen after awaiting the evenness result:\n\n```js\nconst oddFromEven = !(await isEven(37, options));\nconst oddDirectly = await isOdd(37, options);\n```\n\nThis illustrates equivalent intentions, not a guarantee that two model requests agree. See [await before negating](/jev/await-before-negating/) for the Promise trap.\n\n## Smaller depends on what you measure\n\nis-jodd’s published JavaScript entry is 861 bytes versus 1,437 bytes, a 40.1% reduction. Gzipping those entries at level nine yields 562 versus 748 bytes. Our release build minifies the entry, which contributes to the difference.\n\nThe entire npm archive tells a different story: 2,870 bytes for is-jodd versus 1,803 bytes for is-jeven. is-jodd’s archive includes its custom license and other documentation and metadata. Calling the whole package “40% smaller” would misdescribe the measurement.\n\nFor input `3`, the serialized request bodies are 108 and 159 bytes. The 51-byte saving was consistent across our tested inputs; the percentage changes with integer length. These counts exclude headers and TLS.\n\n## The live result was inconclusive on speed\n\nWe measured twenty matched input pairs after two warmup pairs, making 44 requests. Mean times were 157.51 milliseconds for is-jodd and 155.62 milliseconds for the awaited is-jeven negation. is-jodd won nine pairs. Both answered all twenty measured inputs correctly, with no recorded errors or timeouts.\n\nThe exploratory interval for mean paired savings crossed zero. That does not support a general faster claim, and twenty correct answers do not establish guaranteed accuracy. Read the [benchmark methodology](/jev/jev-parity-benchmarks/) for the environment and raw-record links.\n\n## Keep the practical differences visible\n\nis-jodd has a restrictive JODD-1T license requiring $1 trillion and written permission before use unless separate terms are granted. It is not MIT. For ordinary work, the [calculator](/) or a validated remainder check gives the answer without these package and service considerations.",
+    "related": [
+      "jev-parity-benchmarks",
+      "await-before-negating",
+      "smaller-jev-requests"
+    ],
+    "sources": [
+      {
+        "title": "Recorded is-jodd and is-jeven comparison",
+        "url": "https://github.com/0x15f/is-jodd/blob/42bc5d3740af23b47cfeaaa557cfa0499e2bf333/benchmark/RESULTS.md"
+      },
+      {
+        "title": "is-jodd implementation",
+        "url": "https://github.com/0x15f/is-jodd/blob/42bc5d3740af23b47cfeaaa557cfa0499e2bf333/index.js"
+      },
+      {
+        "title": "JODD-1T license",
+        "url": "https://github.com/0x15f/is-jodd/blob/42bc5d3740af23b47cfeaaa557cfa0499e2bf333/LICENSE"
+      }
+    ]
+  },
+  {
+    "slug": "jev-parity-benchmarks",
+    "category": "jev",
+    "title": "Jev parity benchmarks: what our 44 requests actually showed",
+    "description": "Read the full context behind is-jodd’s live benchmark: paired inputs, warmups, accuracy checks, uncertainty, and the separate transport pilot.",
+    "summary": "Twenty measured pairs showed correct answers in this sample but no established latency advantage for is-jodd over awaited is-jeven negation.",
+    "body": "Our live comparison did not establish that is-jodd is faster than `!(await isEven(n))`. That is the starting point for interpreting the experiment, even though the package began with a smaller-and-faster ambition. This report comes from is-jodd’s publisher and is not a TypeSafe performance claim.\n\nThe [recorded results and raw observations](https://github.com/0x15f/is-jodd/blob/42bc5d3740af23b47cfeaaa557cfa0499e2bf333/benchmark/RESULTS.md) describe is-jodd 1.0.0 and is-jeven 1.0.0, measured on September 22, 2026 UTC, with Node 24.7.0 on macOS arm64.\n\n## Compare the same work in alternating order\n\nThe run used twenty measured pairs and two warmup pairs, for 44 actual requests. Each pair used the same integer for both methods, and the first method alternated. The input set included zero, negative values, and safe-integer boundaries.\n\nWarmups were retained in the raw record but excluded from the summary. There were no retries, local result caching, or arithmetic shortcuts in the package calls. Mathematical parity supplied the correctness check for the experiment; it did not replace the remote request.\n\nBoth wrappers requested `jev-latest`. Their public boolean APIs did not expose the resolved server model, so the report does not pretend to identify it. That limits how precisely someone can reproduce the service side of the run later.\n\n## Read the distribution, not one winning statistic\n\nMean latency was 157.51 milliseconds for is-jodd and 155.62 milliseconds for the awaited is-jeven negation. Medians were 152.87 and 147.08 milliseconds. The p95 figures were 189.21 and 213.25 milliseconds, respectively.\n\nA favorable p95 alone would be a selective description. is-jodd won nine of twenty pairs, while mean paired savings were negative 1.90 milliseconds. The exploratory 95% bootstrap interval ran from negative 18.09 to positive 12.89 milliseconds. Because it crosses zero, this sample does not establish a consistent advantage.\n\nBoth methods returned the correct answer for every measured input, with no errors, timeouts, or disagreements. That is a sample result, not a proof covering every safe integer or future service condition.\n\n## Keep the transport pilot separate\n\nA separate experiment compared native fetch with keep-alive `node:https` using the same compact request and pinned `jev-1.13.0`. It used six measured pairs and four warmup requests. HTTPS averaged 141.30 milliseconds versus 176.20 for fetch, but this small pilot mixes transport and service variation. The shipped package still uses fetch.\n\nFor follow-up work, preserve unfavorable runs, specify a request budget, and record accuracy beside latency. Our [package comparison](/jev/is-jodd-vs-is-jeven/) and [request-size article](/jev/smaller-jev-requests/) separate proven byte savings from unproven speed claims. If the actual task is calculating parity, start with the [calculator](/), not an inference benchmark.",
+    "related": [
+      "is-jodd-vs-is-jeven",
+      "smaller-jev-requests",
+      "jev-confidence-and-correctness"
+    ],
+    "sources": [
+      {
+        "title": "Recorded measurements and raw data links",
+        "url": "https://github.com/0x15f/is-jodd/blob/42bc5d3740af23b47cfeaaa557cfa0499e2bf333/benchmark/RESULTS.md"
+      },
+      {
+        "title": "Live benchmark implementation",
+        "url": "https://github.com/0x15f/is-jodd/blob/42bc5d3740af23b47cfeaaa557cfa0499e2bf333/benchmark/live.js"
+      },
+      {
+        "title": "Transport pilot implementation",
+        "url": "https://github.com/0x15f/is-jodd/blob/42bc5d3740af23b47cfeaaa557cfa0499e2bf333/benchmark/transport.js"
+      }
+    ]
+  },
+  {
+    "slug": "jev-confidence-and-correctness",
+    "category": "jev",
+    "title": "Jev confidence vs correctness: what a strong answer proves",
+    "description": "Separate Jev’s reported uncertainty, your decision threshold, and correctness measured against known answers.",
+    "summary": "A high model score is not an independent correctness check. is-jodd’s parity example makes the distinction easy to test.",
+    "body": "A model’s certainty and an answer’s correctness are different things. Certainty belongs to the prediction. Correctness requires a comparison with what is actually true. Parity makes that distinction unusually easy to inspect because every accepted integer already has an exact mathematical answer.\n\nThis is an independent guide from is-jodd’s publisher, not official TypeSafe documentation or an assessment of Jev’s general accuracy.\n\n## Do not confuse different response fields\n\nTypeSafe documents a separate `confidence` field for Choice and Score answers, derived from their probability distributions. Noul does not have that field. is-jodd reads the Noul number and applies a strict threshold above 0.5; its caller receives only the resulting boolean. [Confidence reference](https://docs.typesafe.ai/confidence)\n\nOnce the wrapper returns, the caller cannot reconstruct the original probability from `true` or `false`. If an experiment needs to compare different thresholds, it must retain the raw values through a direct API integration rather than repeatedly guessing what the boolean concealed.\n\n## Build an independent answer key\n\nFor a safe-integer parity experiment, the answer key can be generated locally:\n\n```js\nfunction expectedOdd(n) {\n  if (!Number.isSafeInteger(n)) {\n    throw new TypeError('Expected a safe integer');\n  }\n  return n % 2 !== 0;\n}\n\nconst fixture = [-37, -2, 0, 2, 37];\nconsole.log(fixture.map(expectedOdd));\n// [true, false, false, false, true]\n```\n\nThese outputs come from arithmetic, not an example Jev response. Keeping that distinction visible prevents a test fixture from being mistaken for evidence about the model.\n\nA useful experiment records the input, expected answer, returned answer, and any request failure together. If a request times out, keep it as a failure rather than assigning a convenient boolean. Otherwise the reported accuracy would mix prediction quality with an undocumented error-handling policy.\n\n## Treat sample success as sample success\n\nOur live package benchmark observed twenty correct measured answers for each wrapper. It included negative values and safe-integer boundaries, but it did not exhaust the input domain. The result supports a precise statement about that run, not a promise that Jev never makes a parity mistake.\n\nTypeSafe’s System One explanation also distinguishes calibration across groups of predictions from correctness on an individual answer. An application still needs task-specific evaluation. [System One reference](https://docs.typesafe.ai/concepts/system-one)\n\n## Keep arithmetic outside the uncertainty problem\n\nRaising the threshold changes which predictions become `true`; it does not repair mathematical mistakes in a principled way. For parity, the exact answer is already available and should be preferred whenever the goal is reliable computation.\n\nUse the [calculator](/) for a direct result. Read [Noul boolean questions](/jev/jev-noul-boolean-questions/) for threshold mechanics or [the benchmark report](/jev/jev-parity-benchmarks/) for the measured evidence. is-jodd is a joke package with restrictive JODD-1T terms, not a mathematical authority.",
+    "related": [
+      "jev-noul-boolean-questions",
+      "jev-parity-benchmarks",
+      "when-not-to-use-ai-for-math"
+    ],
+    "sources": [
+      {
+        "title": "TypeSafe confidence reference",
+        "url": "https://docs.typesafe.ai/confidence"
+      },
+      {
+        "title": "TypeSafe System One explanation",
+        "url": "https://docs.typesafe.ai/concepts/system-one"
+      },
+      {
+        "title": "Recorded parity benchmark",
+        "url": "https://github.com/0x15f/is-jodd/blob/42bc5d3740af23b47cfeaaa557cfa0499e2bf333/benchmark/RESULTS.md"
+      },
+      {
+        "title": "is-jodd implementation",
+        "url": "https://github.com/0x15f/is-jodd/blob/42bc5d3740af23b47cfeaaa557cfa0499e2bf333/index.js"
+      }
+    ]
+  },
+  {
+    "slug": "jev-api-errors-and-timeouts",
+    "category": "jev",
+    "title": "Jev API errors and timeouts: keep failures separate from false",
+    "description": "Handle missing credentials, HTTP failures, cancellation, and invalid Jev answers without turning them into ordinary parity results.",
+    "summary": "A rejected request is not an even number. Keep input validation, transport errors, and returned verdicts distinct.",
+    "body": "When a Jev parity request fails, the application has not learned that the number is even. It has failed to obtain a usable answer. A boolean wrapper makes this distinction easy to blur, especially when a catch block returns `false` for every exception.\n\nThis unofficial guide describes is-jodd’s actual behavior and the errors documented by TypeSafe. It does not promise a service availability level or a particular retry success rate.\n\n## Separate local validation from HTTP errors\n\nis-jodd rejects inputs that are not safe integers and rejects a missing or blank API key before issuing its request. An accepted input can still encounter an unsuccessful HTTP response. The wrapper reports the status in an error and does not turn that response into a parity verdict.\n\nTypeSafe’s API reference documents 401 for authentication problems, 422 for invalid request bodies, 429 for rate limits, and 529 for temporary overload. It recommends exponential backoff for 429 and 529. Those API recommendations do not mean this small wrapper retries automatically; it does not. [Official error reference](https://docs.typesafe.ai/api#errors)\n\nCheck a configuration problem before repeating the same request. Retrying a missing credential without changing anything only repeats the mistake. For a transient condition, any retry policy should have a finite attempt limit and a total time budget appropriate to the calling application.\n\n## Give the caller an explicit deadline\n\nThe package accepts an abort signal:\n\n```js\nimport { isOdd } from 'is-jodd';\n\ntry {\n  const odd = await isOdd(37, {\n    signal: AbortSignal.timeout(5000),\n  });\n  console.log({ status: 'answered', odd });\n} catch {\n  console.log({ status: 'unavailable' });\n}\n```\n\nThis example deliberately keeps `unavailable` separate from an answered `false`. In real diagnostics, retain an appropriate error category without logging authorization headers or a credential-bearing configuration object. A client-side deadline also should not be treated as proof that the remote service never received the request.\n\nPackage execution requires permission under is-jodd’s custom JODD-1T license, including its $1 trillion fee unless separate terms are granted. The snippet documents the interface rather than granting rights.\n\n## A successful status is only one checkpoint\n\nis-jodd also validates the JSON answer. It expects the `odd` entry to identify a Noul and contain a number within zero and one. A missing answer, wrong type, or invalid numeric value rejects instead of silently producing a normal result.\n\nThat check protects the interface, not mathematical truth. A well-formed answer can still be wrong. See [confidence and correctness](/jev/jev-confidence-and-correctness/) for that distinction, and [the direct API quickstart](/jev/jev-api-quickstart/) to inspect the request shape. For reliable everyday parity, the [calculator](/) avoids the need to interpret a model verdict.",
+    "related": [
+      "jev-api-quickstart",
+      "is-jodd-getting-started",
+      "jev-confidence-and-correctness"
+    ],
+    "sources": [
+      {
+        "title": "TypeSafe HTTP errors",
+        "url": "https://docs.typesafe.ai/api#errors"
+      },
+      {
+        "title": "is-jodd validation and cancellation",
+        "url": "https://github.com/0x15f/is-jodd/blob/42bc5d3740af23b47cfeaaa557cfa0499e2bf333/index.js"
+      },
+      {
+        "title": "JODD-1T license",
+        "url": "https://github.com/0x15f/is-jodd/blob/42bc5d3740af23b47cfeaaa557cfa0499e2bf333/LICENSE"
+      }
+    ]
+  },
+  {
+    "slug": "await-before-negating",
+    "category": "jev",
+    "title": "Await before negating: the is-jeven Promise trap",
+    "description": "Why !isEven(n) is not an oddness check, and how to negate an async boolean without hiding errors.",
+    "summary": "Negating a Promise tests the Promise object, not its eventual value. Resolve the boolean first, then apply the negation.",
+    "body": "The odd counterpart of an asynchronous evenness check is `!(await isEven(n))`. Writing `!isEven(n)` negates the returned Promise object immediately. It does not wait for the eventual boolean. This independent JavaScript explanation uses the is-jodd experiment as a concrete example; it is not official TypeSafe documentation.\n\nA Promise is an object, and ordinary objects are truthy under JavaScript’s boolean conversion rules. Negating one therefore produces `false`, regardless of whether it later resolves to `true` or `false`. [ECMAScript boolean conversion](https://tc39.es/ecma262/multipage/abstract-operations.html#sec-toboolean)\n\n## Reproduce the mistake without an API call\n\nA tiny local function demonstrates the behavior without credentials, network access, or either npm package:\n\n```js\nasync function exampleIsEven(n) {\n  return n % 2 === 0;\n}\n\nconsole.log(!exampleIsEven(3));         // false\nconsole.log(!(await exampleIsEven(3))); // true\nconsole.log(!(await exampleIsEven(4))); // false\n```\n\nThe first line is wrong for oddness because it operates on the container. The other two lines operate on the resolved value. Parentheses make the intended order visible to someone scanning the code and help prevent a refactor from moving the negation to the wrong place.\n\nAnother readable version names the intermediate result:\n\n```js\nconst even = await exampleIsEven(3);\nconst odd = !even;\n```\n\nThat extra variable is useful when logging a value or stepping through a debugger. Saving a character is not worth obscuring whether code is examining a Promise or its result.\n\n## Await does not convert rejection into false\n\nAn async function can reject instead of resolving. Awaiting it surfaces that failure to the surrounding async control flow. The negation does not magically produce an answer in that case. Use explicit error handling when the function can fail, and keep the error state distinct from a resolved boolean.\n\nThis matters for is-jeven and is-jodd because both contact a remote service. Missing credentials, an unsuccessful response, or cancellation can prevent either call from returning an answer. The [errors article](/jev/jev-api-errors-and-timeouts/) explains why a catch-all `false` would misrepresent the outcome.\n\n## Compare complete operations\n\nOur live benchmark used the correctly awaited negation as its baseline. It did not compare is-jodd against a broken immediate Promise check. The result still did not establish a latency advantage for the direct oddness wrapper. Removing `!` is not a supported explanation for faster API calls.\n\nRead [is-jodd versus is-jeven](/jev/is-jodd-vs-is-jeven/) for the actual measurements. Use the [calculator](/) when you need parity rather than an async example. The local demonstration above requires neither joke package; is-jodd itself remains subject to its restrictive custom license, including $1 trillion and written permission unless separate terms are granted.",
+    "related": [
+      "is-jodd-vs-is-jeven",
+      "jev-api-errors-and-timeouts",
+      "when-not-to-use-ai-for-math"
+    ],
+    "sources": [
+      {
+        "title": "ECMAScript ToBoolean specification",
+        "url": "https://tc39.es/ecma262/multipage/abstract-operations.html#sec-toboolean"
+      },
+      {
+        "title": "Recorded awaited comparison",
+        "url": "https://github.com/0x15f/is-jodd/blob/42bc5d3740af23b47cfeaaa557cfa0499e2bf333/benchmark/RESULTS.md"
+      },
+      {
+        "title": "JODD-1T license",
+        "url": "https://github.com/0x15f/is-jodd/blob/42bc5d3740af23b47cfeaaa557cfa0499e2bf333/LICENSE"
+      }
+    ]
+  },
+  {
+    "slug": "smaller-jev-requests",
+    "category": "jev",
+    "title": "Smaller Jev requests: what saved 51 JSON bytes",
+    "description": "Examine is-jodd’s compact state and Noul question, then distinguish request bytes, module size, archive size, and live latency.",
+    "summary": "A focused question and compact state saved 51 request-body bytes in our tests. The result is a size measurement, not proof of faster inference.",
+    "body": "is-jodd’s request body is shorter than is-jeven 1.0.0’s body because it sends a compact state and a different question shape. Our capture of actual package calls found 51 fewer UTF-8 JSON bytes for every tested integer. This is a firsthand implementation result from is-jodd’s publisher, not a general TypeSafe optimization guarantee.\n\n## Compare the data the functions actually send\n\nis-jeven wraps the input in a `num` property and asks a Choice question with two named options. is-jodd sends `String(num)` as its state and asks one Noul question without a Choice criteria map. The application still knows the expected response key and validates the returned type.\n\nFor input `3`, the complete serialized request bodies were 159 bytes and 108 bytes respectively. That is a 32.1% reduction for that input. Longer integer representations increase both totals, so the same 51-byte difference becomes a smaller percentage.\n\nYou can measure a proposed body in Node without sending it:\n\n```js\nconst body = JSON.stringify({\n  model: 'jev-latest',\n  state: '37',\n  questions: {\n    odd: {\n      type: 'noul',\n      instructions: 'Is this integer odd?',\n    },\n  },\n});\nconsole.log(Buffer.byteLength(body, 'utf8'));\n```\n\nThis measures the JSON string only. It does not measure headers, encryption overhead, network compression, or the provider’s internal work. Character count is also a different measure from UTF-8 byte count when text contains characters that require multiple bytes.\n\n## Preserve meaning before removing structure\n\nA single integer has little surrounding context, so representing it as a string is easy to inspect. That observation does not justify flattening every application record. If a question depends on several fields, their labels may be necessary to distinguish which value means what.\n\nA useful review asks whether removing a field changes the information available to the question. Keep an exact example before and after the change, then inspect how the receiving code finds and validates its answer. Saving a few bytes would be a poor trade if a future maintainer could no longer tell what was being evaluated.\n\n## Keep four measurements separate\n\nRequest size concerns transmitted JSON. Runtime-entry size concerns the shipped JavaScript file. Archive size includes metadata, documentation, and licensing. Latency concerns elapsed execution time. Each answers a different question.\n\nOur runtime entry was 40.1% smaller, while the complete npm archive was 59.2% larger. Our live latency comparison did not establish a speed win. Read the [full package comparison](/jev/is-jodd-vs-is-jeven/) before repeating any percentage without its measurement label.\n\nFor reproducibility details, see [the benchmark article](/jev/jev-parity-benchmarks/). For ordinary arithmetic, the [calculator](/) avoids making a Jev request at all. is-jodd is an intentionally excessive demonstration with restrictive JODD-1T licensing, not an efficiency requirement for checking an integer.",
+    "related": [
+      "is-jodd-vs-is-jeven",
+      "jev-choice-vs-noul",
+      "jev-parity-benchmarks"
+    ],
+    "sources": [
+      {
+        "title": "Recorded byte measurements",
+        "url": "https://github.com/0x15f/is-jodd/blob/42bc5d3740af23b47cfeaaa557cfa0499e2bf333/benchmark/RESULTS.md"
+      },
+      {
+        "title": "Actual is-jodd request construction",
+        "url": "https://github.com/0x15f/is-jodd/blob/42bc5d3740af23b47cfeaaa557cfa0499e2bf333/index.js"
+      },
+      {
+        "title": "Offline measurement implementation",
+        "url": "https://github.com/0x15f/is-jodd/blob/42bc5d3740af23b47cfeaaa557cfa0499e2bf333/benchmark/offline.js"
+      }
+    ]
+  },
+  {
+    "slug": "when-not-to-use-ai-for-math",
+    "category": "jev",
+    "title": "When not to use AI for math: the is-jodd example",
+    "description": "Use exact arithmetic for exact questions, and keep probabilistic interpretation outside the calculation itself.",
+    "summary": "is-jodd is a joke about using a model for parity. Its useful lesson is knowing where deterministic code already solves the problem.",
+    "body": "Do not call an AI service to determine integer parity when an exact local operation already does the job. is-jodd intentionally makes that decision excessive: it sends a number to Jev, waits for a probability, validates the response, and turns it into a boolean. The project is a joke, not a claim that arithmetic needs inference.\n\nThis article is from is-jodd’s publisher and is independent of TypeSafe. It explains the boundary illustrated by our package rather than judging AI’s usefulness across unrelated tasks.\n\n## Use an operation that matches the input domain\n\nFor JavaScript Number inputs restricted to safe integers, a remainder check is enough:\n\n```js\nfunction exactOdd(n) {\n  if (!Number.isSafeInteger(n)) {\n    throw new TypeError('Expected a safe integer');\n  }\n  return n % 2 !== 0;\n}\n\nconsole.log(exactOdd(-37)); // true\nconsole.log(exactOdd(0));   // false\nconsole.log(exactOdd(38));  // false\n```\n\nThe validation matters. An input such as `3.5` is not an integer parity question, and the string `'37'` needs deliberate parsing before it belongs to this function’s domain. Avoid presenting a result for a different value merely because an automatic conversion happened to succeed.\n\nFor negative odd integers, the remainder can be negative. Comparing with zero handles that case; testing only whether the remainder equals positive one would not. Large exact values also require attention to representation before any calculation begins.\n\n## Separate language interpretation from calculation\n\nAn application may need help interpreting a sentence such as “split these seats into equal pairs.” That language task and the subsequent arithmetic are separate steps. Once the relevant integer is known and validated, its parity is no longer an uncertain language judgment.\n\nOne possible design is to let an interpretation step propose structured inputs, show or validate those inputs, and then run ordinary arithmetic. This is an architectural example, not a demonstrated Jev accuracy result. The important boundary is that the calculation remains inspectable and repeatable.\n\n## Account for the obligations a remote call introduces\n\nis-jodd requires an API credential, asynchronous control flow, and failure handling. A timeout is not a mathematical result. A well-formed model response is not proof of correctness. Our twenty measured test pairs all produced correct answers, but that small observation does not replace the exact computation already available.\n\nThe package also carries the custom JODD-1T license: $1 trillion and written permission before use unless separate terms are granted. The fee is part of the project’s deliberately absurd framing; the published terms are restrictive, not MIT, and receipt does not create an automatic debt.\n\nUse the [calculator](/) for a practical answer. Read [confidence and correctness](/jev/jev-confidence-and-correctness/) to separate model judgments from answer keys, or [the benchmark report](/jev/jev-parity-benchmarks/) to see how we tested a joke without claiming a speed advantage that the measurements did not establish.",
+    "related": [
+      "jev-confidence-and-correctness",
+      "jev-parity-benchmarks",
+      "what-is-jev"
+    ],
+    "sources": [
+      {
+        "title": "is-jodd implementation and accepted inputs",
+        "url": "https://github.com/0x15f/is-jodd/blob/42bc5d3740af23b47cfeaaa557cfa0499e2bf333/index.js"
+      },
+      {
+        "title": "Measured parity results",
+        "url": "https://github.com/0x15f/is-jodd/blob/42bc5d3740af23b47cfeaaa557cfa0499e2bf333/benchmark/RESULTS.md"
+      },
+      {
+        "title": "JODD-1T license",
+        "url": "https://github.com/0x15f/is-jodd/blob/42bc5d3740af23b47cfeaaa557cfa0499e2bf333/LICENSE"
+      }
+    ]
+  }
+]

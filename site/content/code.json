@@ -1,0 +1,294 @@
+[
+  {
+    "slug": "odd-number-javascript",
+    "category": "code",
+    "title": "Check whether a number is odd in JavaScript",
+    "description": "Use a safe-integer guard and remainder to check odd numbers in JavaScript, including negatives, zero, invalid inputs, and precision limits.",
+    "summary": "Validate the integer first, then return n % 2 !== 0. Negative values need a nonzero comparison.",
+    "body": "Use `n % 2 !== 0` after checking that `n` is a safe integer. The remainder expression answers the parity question; the guard prevents strings, fractions, and rounded large values from quietly becoming answers. This small function is useful anywhere your input contract promises an ordinary JavaScript integer.\n\n## A helper for safe integers\n\n```js\nfunction isOdd(n) {\n  if (!Number.isSafeInteger(n)) {\n    throw new TypeError('Expected a safe integer');\n  }\n  return n % 2 !== 0;\n}\n\nconsole.log(isOdd(27));  // true\nconsole.log(isOdd(-27)); // true\nconsole.log(isOdd(0));   // false\nconsole.log(isOdd(-0));  // false\n```\n\n## Handle negative integers\n\nJavaScript's `%` operator keeps the dividend's sign, so a negative odd integer produces a negative remainder. For example, `-27 % 2` is `-1`. Comparing that result with `1` would incorrectly reject the number. Comparing with zero handles either sign. [MDN documents the remainder rules](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Remainder).\n\n## Reject invalid input before arithmetic\n\nThe guard is part of this function's contract. A fraction such as `2.5` has a nonzero remainder but is neither an odd integer nor an even integer. Similarly, `NaN % 2 !== 0` evaluates to true, making an unguarded expression a poor validator. Throwing separates invalid input from the legitimate answer false.\n\n`Number.isSafeInteger` accepts integer values between negative and positive `9,007,199,254,740,991`, inclusive. It does not convert a numeric string before checking it. [Its reference explains the safe range](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/isSafeInteger). If your identifiers can exceed that range, preserve their original decimal text and use BigInt instead.\n\nFor a form field, treat parsing as a separate decision. You might accept surrounding whitespace, or you might insist on digits only. Calling `Number` without that decision can turn an empty string into zero. Calling `parseInt` can accept an initial integer while leaving trailing text unexamined. Neither behavior belongs implicitly in a parity helper.\n\n## Test and use the helper\n\nHere is a compact check of the intended behavior:\n\n```js\nfor (const [n, expected] of [[-5, true], [-4, false], [0, false], [9, true]]) {\n  console.assert(isOdd(n) === expected);\n}\n// Each call below throws:\n// isOdd('9'); isOdd(9.5); isOdd(Infinity);\n```\n\nUse the helper when filtering a validated numeric list, assigning alternating integer slots, or validating an odd count. If invalid records should be skipped, perform that filtering explicitly rather than catching every error and calling it even. A boolean result should mean that a supported integer was checked successfully.\n\nThe expression does not need a network request or an npm dependency. Choose readable arithmetic first. A claim that a bitwise spelling is faster requires measurement in the actual workload, and it would not remove the need to validate input.\n\nBoxed Number objects are rejected too. If a legacy API supplies them, unwrap the value deliberately at its boundary so object conversion does not become an accidental feature of the predicate.",
+    "related": [
+      "odd-number-typescript",
+      "odd-number-bigint",
+      "odd-number-python"
+    ],
+    "sources": [
+      {
+        "title": "MDN: remainder operator",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Remainder"
+      },
+      {
+        "title": "MDN: Number.isSafeInteger",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/isSafeInteger"
+      }
+    ]
+  },
+  {
+    "slug": "odd-number-typescript",
+    "category": "code",
+    "title": "Check odd numbers in TypeScript with runtime validation",
+    "description": "Build a TypeScript odd-number check that narrows unknown input, validates safe integers, and distinguishes invalid data from an even result.",
+    "summary": "A number annotation does not validate JSON. Narrow unknown input and check Number.isSafeInteger before using remainder.",
+    "body": "A TypeScript `number` parameter can still contain a fraction, infinity, or an unsafe integer. It also cannot protect a running application from incorrectly shaped JSON. For a public boundary, accept `unknown`, validate it, and then perform the ordinary remainder check.\n\n## Validate unknown input\n\n```ts\ntype OddResult =\n  | { ok: true; odd: boolean }\n  | { ok: false; error: string };\n\nfunction checkOdd(value: unknown): OddResult {\n  if (typeof value !== 'number' || !Number.isSafeInteger(value)) {\n    return { ok: false, error: 'Expected a safe integer' };\n  }\n  return { ok: true, odd: value % 2 !== 0 };\n}\n\nconst result = checkOdd(-13);\nif (result.ok) {\n  console.log(result.odd); // true\n} else {\n  console.error(result.error);\n}\n```\n\n## Understand narrowing and result states\n\nThe `typeof` test gives both the runtime and the compiler useful information. In the successful branch, the compiler knows that `value` is a number. The safe-integer check then restricts the accepted numeric values. TypeScript's [narrowing guide](https://www.typescriptlang.org/docs/handbook/2/narrowing.html) describes how control flow uses these checks.\n\nThe result deliberately has two levels. `ok: true, odd: false` means that a valid integer was even. `ok: false` means the supplied value did not satisfy the contract. That distinction helps a form show an error without accidentally labeling an empty field, a boolean, or a misspelled value as even.\n\nDo not replace the validation with `value as number`. An assertion changes what the compiler assumes; it does not transform the value or check it at runtime. The [TypeScript handbook](https://www.typescriptlang.org/docs/handbook/2/everyday-types.html#type-assertions) makes that behavior explicit. The same issue applies when an HTTP client exposes a generic response type without validating the actual response.\n\n## Use a smaller internal helper\n\nFor internal code that already handles invalid input through exceptions, a simpler signature is reasonable:\n\n```ts\nfunction isOdd(n: number): boolean {\n  if (!Number.isSafeInteger(n)) throw new TypeError('Expected a safe integer');\n  return n % 2 !== 0;\n}\n```\n\nThis second function still checks the numeric range because the `number` type includes more than integers. Neither version accepts a numeric string. Keep conversion beside the form or request parser so callers can see whether whitespace, signs, or decimal notation are permitted.\n\n## Check boundaries and extensions\n\nTest successful values such as `-13`, `-12`, `0`, and the largest safe integer. Test invalid values such as `undefined`, `'13'`, `13.5`, and `NaN`. Negative odd numbers are particularly useful: a mistaken `=== 1` comparison often passes positive-only examples.\n\nIf you later support BigInt, add a deliberate second implementation or overload with its own validation. Mixing Number and BigInt arithmetic is an error. A broad union type alone does not decide how each branch should work, and converting a large integer through Number can destroy the information you need.\n\nWhen validating an object from a request, check the outer object's shape before passing its count field to this helper. A sound field validator cannot by itself establish that the surrounding record exists.",
+    "related": [
+      "odd-number-javascript",
+      "odd-number-bigint",
+      "odd-number-csharp"
+    ],
+    "sources": [
+      {
+        "title": "TypeScript: narrowing",
+        "url": "https://www.typescriptlang.org/docs/handbook/2/narrowing.html"
+      },
+      {
+        "title": "TypeScript: type assertions",
+        "url": "https://www.typescriptlang.org/docs/handbook/2/everyday-types.html#type-assertions"
+      },
+      {
+        "title": "MDN: Number.isSafeInteger",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/isSafeInteger"
+      }
+    ]
+  },
+  {
+    "slug": "odd-number-python",
+    "category": "code",
+    "title": "Check whether an integer is odd in Python",
+    "description": "Write a Python odd-number helper with explicit integer validation, correct negative-number behavior, and a clear policy for booleans and large integers.",
+    "summary": "For Python integers, n % 2 != 0 checks oddness. Decide explicitly whether booleans and integer subclasses belong in your input contract.",
+    "body": "For a Python integer, `n % 2 != 0` tells you whether it is odd. Python integers can grow beyond a machine word, so the same expression works for a small counter or a very large exact value. A public helper should also say which input types it accepts.\n\n## A strict integer helper\n\n```python\ndef is_odd(n: int) -> bool:\n    if type(n) is not int:\n        raise TypeError('Expected a built-in int')\n    return n % 2 != 0\n\nassert is_odd(35)\nassert is_odd(-35)\nassert not is_odd(-34)\nassert not is_odd(0)\nassert is_odd(10**80 + 1)\n```\n\n## Choose a policy for booleans and subclasses\n\nThis version deliberately accepts only the built-in `int` type. It rejects booleans, floats, strings, and integer subclasses. That strict choice is useful at a boundary where `True` should not stand in for the number one. Python documents that [bool is a subclass of int](https://docs.python.org/3/library/stdtypes.html#boolean-type-bool), which is why `isinstance(True, int)` alone is not enough for this contract.\n\nIf your application should accept integer subclasses, use `isinstance(n, int) and not isinstance(n, bool)` instead. That policy is broader than the example above. Choose one intentionally and cover it with a test; silently accepting extra types makes a tiny helper more surprising than its arithmetic.\n\n## Understand negative remainders and input types\n\nWith a positive divisor of two, Python's remainder is nonnegative. Thus `-35 % 2` is `1`. The [language reference describes the divisor-sign rule](https://docs.python.org/3/reference/expressions.html#binary-arithmetic-operations). Comparing with zero remains a clear way to express divisibility and is easy to recognize when translating the function to another language.\n\nType annotations do not enforce this input rule while the program runs. Calling `is_odd(3.5)` still reaches the function, where the explicit check raises the exception. An unguarded modulo expression would return a nonzero remainder for that fraction, but parity is a property of integers.\n\nWhen values arrive as text, validate and parse them before invoking the helper. A command-line program might deliberately accept surrounding whitespace through `int(text)`. A file format might require a much narrower decimal grammar. Keep the parsing policy visible rather than having a boolean predicate reinterpret every string it receives.\n\n## Filter and test integer collections\n\nFor a collection already known to contain integers, filtering is straightforward:\n\n```python\ncounts = [-8, -7, 0, 4, 11]\nodd_counts = [n for n in counts if is_odd(n)]\nassert odd_counts == [-7, 11]\n```\n\nInclude zero, a negative odd value, and a rejected boolean in your checks. Add a large integer if the data pipeline handles large identifiers, and ensure that pipeline never converts the value through a floating-point number first. Exact arithmetic cannot recover digits lost during an earlier conversion. There is no need for a remote service to answer this question.",
+    "related": [
+      "odd-number-javascript",
+      "odd-number-bigint",
+      "odd-number-rust"
+    ],
+    "sources": [
+      {
+        "title": "Python: numeric and Boolean types",
+        "url": "https://docs.python.org/3/library/stdtypes.html"
+      },
+      {
+        "title": "Python: binary arithmetic operations",
+        "url": "https://docs.python.org/3/reference/expressions.html#binary-arithmetic-operations"
+      }
+    ]
+  },
+  {
+    "slug": "odd-number-java",
+    "category": "code",
+    "title": "Check odd numbers in Java, including negative values",
+    "description": "Use a long remainder check in Java, parse text with Long.parseLong, and avoid negative-number and minimum-value mistakes.",
+    "summary": "Use n % 2L != 0L for a long. Parsing and null handling should be explicit decisions before the parity calculation.",
+    "body": "In Java, a signed integer is odd when dividing it by two leaves a nonzero remainder. A `long` helper handles both ordinary `int` arguments and larger integer values without converting them to floating point. It also works directly for negative numbers.\n\n## A runnable long example\n\n```java\npublic final class OddNumbers {\n    public static boolean isOdd(long n) {\n        return n % 2L != 0L;\n    }\n\n    public static void main(String[] args) {\n        long[] values = {-21L, -20L, 0L, 21L, Long.MIN_VALUE};\n        for (long value : values) {\n            System.out.println(value + \": \" + isOdd(value));\n        }\n    }\n}\n```\n\nSave this example as `OddNumbers.java`, compile it with `javac OddNumbers.java`, and run it with `java OddNumbers`. The results are true, false, false, true, and false in that order. The explicit `L` suffix keeps the examples visibly in the `long` domain.\n\n## Handle negatives without absolute values\n\nA common mistake is `n % 2 == 1`. Java gives a negative dividend a negative nonzero remainder, so `-21 % 2` is `-1`. The [Java language specification defines integer remainder](https://docs.oracle.com/javase/specs/jls/se25/html/jls-15.html#jls-15.17.3). Testing against zero avoids caring which sign the remainder has.\n\nDo not take an absolute value just to handle negative inputs. The most negative signed value has no corresponding positive value in the same signed type. This helper needs no absolute value and no increment, so checking `Long.MIN_VALUE` does not introduce those extra arithmetic hazards. Dividing by the constant two also avoids a variable divisor that could be zero.\n\n## Parse external text explicitly\n\nText belongs at the input boundary. Use an exact integer parser and report its failure instead of routing through `double` or silently replacing invalid text with zero:\n\n```java\ntry {\n    long count = Long.parseLong(\"-1003\");\n    System.out.println(OddNumbers.isOdd(count)); // true\n} catch (NumberFormatException error) {\n    System.err.println(\"Enter an integer in the long range.\");\n}\n```\n\n`Long.parseLong` rejects values outside the signed 64-bit range and text that cannot represent the requested integer. Its [API reference describes accepted signs and failure cases](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Long.html#parseLong(java.lang.String)). If your interface permits surrounding whitespace, trim it deliberately before parsing rather than assuming the helper does so.\n\n## Check nulls and range boundaries\n\nPrimitive `long` cannot be null, but a boxed `Long` can. Passing a null wrapper to this method causes unboxing to fail before the arithmetic. Decide whether missing values should be rejected, skipped, or represented separately in your application's result.\n\nTest the two endpoints, zero, adjacent positive values, and adjacent negative values. For integers beyond `long`, use an arbitrary-precision integer representation from the start. A wider mathematical value cannot be restored after an earlier floating-point conversion has rounded it.\n\nA successful parity result should be reusable outside the console program. Keep user-facing error messages in the input layer, leaving the helper free of printing, logging, or assumptions about a particular interface.",
+    "related": [
+      "odd-number-csharp",
+      "odd-number-go",
+      "odd-number-rust"
+    ],
+    "sources": [
+      {
+        "title": "Java language specification: remainder",
+        "url": "https://docs.oracle.com/javase/specs/jls/se25/html/jls-15.html#jls-15.17.3"
+      },
+      {
+        "title": "Java Long.parseLong",
+        "url": "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Long.html#parseLong(java.lang.String)"
+      }
+    ]
+  },
+  {
+    "slug": "odd-number-csharp",
+    "category": "code",
+    "title": "Check odd numbers in C# without losing input errors",
+    "description": "Check a C# long for oddness, parse signed decimal text safely, and keep invalid or missing input separate from even numbers.",
+    "summary": "Use value % 2 != 0 for integer parity. TryParse lets the caller distinguish an invalid input from a valid even result.",
+    "body": "A C# integer is odd when its remainder after division by two is nonzero. Use a signed integer type for whole-number counts and keep parsing separate from the predicate. The following console example accepts signed decimal text and reports invalid input without treating it as even.\n\n## A signed integer example\n\n```csharp\nusing System;\nusing System.Globalization;\n\nstatic bool IsOdd(long value) => value % 2 != 0;\n\nstring text = \"-73\";\nif (long.TryParse(text, NumberStyles.AllowLeadingSign,\n                  CultureInfo.InvariantCulture, out long value))\n{\n    Console.WriteLine(IsOdd(value)); // True\n}\nelse\n{\n    Console.WriteLine(\"Enter a signed 64-bit integer.\");\n}\n```\n\n## Keep parsing errors visible\n\nThe explicit parsing style accepts a leading plus or minus sign. It does not ask the parser to accept surrounding whitespace, thousands separators, or a decimal point. This is one useful policy for a machine-readable input field; a human-facing form may choose a different policy. The [Int64.TryParse documentation](https://learn.microsoft.com/en-us/dotnet/api/system.int64.tryparse) lists the overloads and their parsing behavior.\n\nCheck the boolean returned by `TryParse` before using its output. If parsing fails, the output value alone must not become the answer to the user's question. Otherwise, an invalid string can accidentally travel through a fallback zero and appear to be a successfully checked even number.\n\n## Check negative values and numeric limits\n\nC# remainder can be negative when the left operand is negative. For example, `-73 % 2` is `-1`, so comparing with positive one is incorrect for this input. [Microsoft's arithmetic operator reference](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/arithmetic-operators#remainder-operator-) explains that behavior. The nonzero comparison handles both negative and positive odd integers.\n\nTest the arithmetic independently of the text parser:\n\n```csharp\nConsole.WriteLine(IsOdd(-74));           // False\nConsole.WriteLine(IsOdd(0));             // False\nConsole.WriteLine(IsOdd(long.MinValue)); // False\nConsole.WriteLine(IsOdd(long.MaxValue)); // True\n```\n\nThe helper does not need `Math.Abs`. Avoiding an absolute-value conversion also avoids introducing an extra edge case at the smallest signed integer. The divisor is always two, so the code does not depend on caller-supplied division settings or a nonzero-divisor check.\n\n## Handle missing values and measurements\n\nUse a separate policy for `long?`. A missing nullable value is not mathematically even or odd. You can reject it, leave a result empty, or produce a result object with a missing-input state. Automatically calling `GetValueOrDefault` would choose zero and hide that distinction.\n\nDo not pass decimal measurements through an integer cast just to reuse this function. A quantity such as `73.9` needs validation or an explicitly documented rounding decision before parity makes sense. Test parser rejection and arithmetic results separately so changes to an input form cannot quietly change what the odd-number helper means.\n\nFor a CSV import, retain the original field beside any parsing error. That makes it possible to correct the source record without guessing which normalization or conversion produced a result.",
+    "related": [
+      "odd-number-java",
+      "odd-number-typescript",
+      "odd-number-go"
+    ],
+    "sources": [
+      {
+        "title": "C# arithmetic operators",
+        "url": "https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/arithmetic-operators"
+      },
+      {
+        "title": "Int64.TryParse",
+        "url": "https://learn.microsoft.com/en-us/dotnet/api/system.int64.tryparse"
+      }
+    ]
+  },
+  {
+    "slug": "odd-number-go",
+    "category": "code",
+    "title": "Check whether an integer is odd in Go",
+    "description": "Use an int64 remainder check in Go, parse decimal text with strconv, and handle architecture-dependent integers and parse errors explicitly.",
+    "summary": "An int64 value is odd when n % 2 != 0. Keep strconv.ParseInt errors separate from the parity result.",
+    "body": "In Go, use `n % 2 != 0` to check an integer for oddness. A small helper with an `int64` parameter gives the input a fixed width across platforms. That is useful when the number arrives from a file, a database, or another service with a signed 64-bit contract.\n\n## A fixed-width integer helper\n\n```go\npackage main\n\nimport (\n    \"fmt\"\n    \"strconv\"\n)\n\nfunc isOdd(n int64) bool {\n    return n%2 != 0\n}\n\nfunc main() {\n    n, err := strconv.ParseInt(\"-105\", 10, 64)\n    if err != nil {\n        fmt.Println(\"invalid signed 64-bit integer\")\n        return\n    }\n    fmt.Println(isOdd(n)) // true\n}\n```\n\n## Check parsing errors and input format\n\n`ParseInt` receives an explicit decimal base and a 64-bit size. Check `err` before using the returned number. An out-of-range parse can return a boundary value together with an error, so ignoring the error can produce a plausible answer for input that was never accepted. The [strconv documentation describes this behavior](https://pkg.go.dev/strconv#ParseInt).\n\nChoosing base ten also makes the input grammar easier to explain: the user is supplying a decimal integer. Do not select automatic base detection unless prefixes such as hexadecimal are part of your interface. The parser does not trim whitespace; apply `strings.TrimSpace` explicitly if the surrounding application wants to accept it.\n\n## Test signed remainder behavior\n\nNegative odd values need a nonzero comparison. Go's integer division truncates toward zero, and its remainder follows that relationship. Thus `-105 % 2` is `-1`. A predicate using `== 1` would incorrectly return false. The [Go specification gives the quotient and remainder rules](https://go.dev/ref/spec#Arithmetic_operators).\n\nTry these cases when reviewing the helper:\n\n```go\nvar samples = []int64{-6, -5, 0, 5, 6}\nfor _, n := range samples {\n    fmt.Println(n, isOdd(n))\n}\n```\n\nThe expected odd values are `-5` and `5`. Add the smallest and largest `int64` values if your input contract permits the complete range. The implementation never negates its input or adds one, which keeps those tests focused on parity rather than on an unnecessary intermediate operation.\n\n## Choose the type that matches the data\n\nGo's plain `int` may be a different width on different target architectures. A helper accepting `int` is perfectly reasonable for local slice indexes, while a fixed-width helper fits a fixed-width storage format. Choose the parameter type to match the data rather than converting every value to the widest type by habit.\n\nThe remainder operator applies to integers in Go. If input starts as a floating-point measurement, converting it to `int64` is a separate data decision and can discard its fractional part. Reject inappropriate measurements at the boundary instead of allowing the cast to redefine the question. This calculation needs no dependency, background goroutine, or network call.",
+    "related": [
+      "odd-number-rust",
+      "odd-number-java",
+      "odd-number-csharp"
+    ],
+    "sources": [
+      {
+        "title": "Go specification: arithmetic operators",
+        "url": "https://go.dev/ref/spec#Arithmetic_operators"
+      },
+      {
+        "title": "Go strconv.ParseInt",
+        "url": "https://pkg.go.dev/strconv#ParseInt"
+      }
+    ]
+  },
+  {
+    "slug": "odd-number-rust",
+    "category": "code",
+    "title": "Check odd numbers in Rust with explicit parsing errors",
+    "description": "Check i64 parity in Rust, propagate ParseIntError with Result, and cover negative integers, whitespace, range limits, and minimum values.",
+    "summary": "Use n % 2 != 0 for i64 parity. A Result-returning parser preserves the difference between invalid input and an even integer.",
+    "body": "For a Rust integer, `n % 2 != 0` is a clear odd-number test. An `i64` parameter gives the function a concrete signed range, while a separate parser can return a useful error when external text does not fit that range.\n\n## Return parsing errors with Result\n\n```rust\nuse std::num::ParseIntError;\n\nfn is_odd(n: i64) -> bool {\n    n % 2 != 0\n}\n\nfn parse_odd(text: &str) -> Result<bool, ParseIntError> {\n    text.parse::<i64>().map(is_odd)\n}\n\nfn main() {\n    match parse_odd(\"-117\") {\n        Ok(odd) => println!(\"odd: {odd}\"),\n        Err(error) => eprintln!(\"invalid integer: {error}\"),\n    }\n}\n```\n\n## Keep parser policy explicit\n\n`map` calls `is_odd` only when parsing succeeds. A failed parse stays an error, while `Ok(false)` is the valid answer for an even integer. Keeping those outcomes separate matters when a command-line argument or uploaded record contains a typo.\n\nThe standard library's [i64 parsing documentation](https://doc.rust-lang.org/std/primitive.i64.html#impl-FromStr-for-i64) describes the decimal format and its errors. This example does not trim input. If a user interface should permit surrounding whitespace, call `trim` visibly at the boundary. Do not conceal that policy inside an arithmetic predicate.\n\n## Test negative values and boundaries\n\nRust uses a remainder based on division that truncates toward zero. A negative odd dividend therefore has a remainder of negative one when divided by two. The [operator reference defines the behavior](https://doc.rust-lang.org/reference/expressions/operator-expr.html). Comparing the result with zero works for either sign; comparing with positive one does not.\n\nThese checks cover both the arithmetic and the parser contract:\n\n```rust\nassert!(is_odd(-117));\nassert!(!is_odd(-116));\nassert!(!is_odd(0));\nassert!(!is_odd(i64::MIN));\nassert!(is_odd(i64::MAX));\nassert!(parse_odd(\"117.5\").is_err());\nassert!(parse_odd(\" 117 \").is_err());\nassert!(parse_odd(\"9223372036854775808\").is_err());\n```\n\nThe implementation does not call `abs`, negate the number, or increment it. That avoids introducing extra operations at the signed minimum and maximum. Rust has overflow rules for certain arithmetic operations, including dividing or taking the remainder of the signed minimum by negative one. The constant divisor two in this helper does not trigger that case.\n\n## Match the integer type to the domain\n\nUse the integer type that matches the domain. `usize` is appropriate for local collection indexes, while an explicitly sized type is easier to align with a file format. A generic parity abstraction is usually unnecessary when the application has one well-defined representation.\n\nDo not cast a floating-point reading into an integer merely to make this function accept it. That would answer a question about the converted value instead of validating the original measurement. Make rounding or rejection an explicit earlier step. Likewise, avoid `unwrap` on untrusted text unless a panic is genuinely the intended input-error behavior.\n\nFor an unsigned counter, the same expression works in a helper taking `u64`. Keep that as a separate, explicit signature when negative values are forbidden by the data model.",
+    "related": [
+      "odd-number-go",
+      "odd-number-java",
+      "odd-number-python"
+    ],
+    "sources": [
+      {
+        "title": "Rust reference: operator expressions",
+        "url": "https://doc.rust-lang.org/reference/expressions/operator-expr.html"
+      },
+      {
+        "title": "Rust i64 parsing",
+        "url": "https://doc.rust-lang.org/std/primitive.i64.html#impl-FromStr-for-i64"
+      }
+    ]
+  },
+  {
+    "slug": "odd-number-php",
+    "category": "code",
+    "title": "Check odd integers in PHP without silent coercion",
+    "description": "Use is_int and remainder in PHP to reject strings, fractions, and booleans before checking signed integer parity.",
+    "summary": "For PHP 8+, validate a mixed value with is_int and return $n % 2 !== 0. Avoid letting coercion define your input policy.",
+    "body": "In PHP, use a nonzero remainder to test an integer for oddness. At an application boundary, check the value's actual type before applying `%`. This avoids quietly converting a numeric string or a fraction into a different input.\n\n## A helper with explicit type validation\n\n```php\n<?php\nfunction isOdd(mixed $n): bool {\n    if (!is_int($n)) {\n        throw new TypeError('Expected an integer');\n    }\n    return $n % 2 !== 0;\n}\n\nvar_dump(isOdd(43));  // bool(true)\nvar_dump(isOdd(-43)); // bool(true)\nvar_dump(isOdd(-42)); // bool(false)\nvar_dump(isOdd(0));   // bool(false)\n```\n\n## Understand coercion and signed remainders\n\nThe `mixed` parameter makes this PHP 8+ example explicit: callers may supply anything, but the function accepts only an actual integer. The runtime check rejects `'43'`, `43.0`, `43.5`, `true`, and `null`. Even a floating-point value with no fractional part is outside this particular contract.\n\nThat strictness is deliberate. PHP's remainder operation converts its operands to integers before calculating a result. Applying it directly to a fractional value would therefore answer a question about a converted integer. The [arithmetic operator manual](https://www.php.net/manual/en/language.operators.arithmetic.php) documents the conversions and the sign of the result.\n\nDo not use `$n % 2 === 1` when negative values are allowed. A negative odd input can produce `-1`, so that comparison misses it. `$n % 2 !== 0` accepts either nonzero remainder and also returns false for zero.\n\n## Separate text parsing from integer checks\n\nThe [is_int reference](https://www.php.net/manual/en/function.is-int.php) distinguishes integer values from numeric strings. This matters for web forms, where text input commonly arrives as a string. Parse and validate that text before calling `isOdd`, then report parsing errors separately. A blanket integer cast can discard a fractional part and hide malformed input.\n\nChoosing a typed `int` parameter alone is a different API choice. PHP's scalar coercion behavior depends on how the call is made and the applicable strict-typing rules. Using `mixed` plus `is_int` makes the rejection policy visible inside the function, including for calls from another file.\n\n## Test platform limits and failure behavior\n\nExercise the platform's actual limits instead of assuming every deployment has the same integer width:\n\n```php\nvar_dump(isOdd(PHP_INT_MIN)); // bool(false)\nvar_dump(isOdd(PHP_INT_MAX)); // bool(true)\n\ntry {\n    isOdd('43');\n} catch (TypeError $error) {\n    echo $error->getMessage();\n}\n```\n\nThe helper needs neither an absolute-value conversion nor a floating-point intermediate. For an integer larger than PHP can represent, retain its decimal text and use an appropriate arbitrary-precision approach; first coercing it into a native number can lose the last digit.\n\nIn production code, keep invalid data distinct from even data. Returning false for every rejected input makes a validation problem look like a mathematical result. An exception, or a separate validation result chosen by the caller, preserves the distinction.",
+    "related": [
+      "odd-number-javascript",
+      "odd-number-python",
+      "odd-number-bigint"
+    ],
+    "sources": [
+      {
+        "title": "PHP arithmetic operators",
+        "url": "https://www.php.net/manual/en/language.operators.arithmetic.php"
+      },
+      {
+        "title": "PHP is_int",
+        "url": "https://www.php.net/manual/en/function.is-int.php"
+      },
+      {
+        "title": "PHP integer types",
+        "url": "https://www.php.net/manual/en/language.types.integer.php"
+      }
+    ]
+  },
+  {
+    "slug": "odd-number-sql",
+    "category": "code",
+    "title": "Find odd numbers in SQL using PostgreSQL",
+    "description": "Use PostgreSQL mod or % for integer parity, handle NULL deliberately, and distinguish odd ID values from alternating query rows.",
+    "summary": "In PostgreSQL, mod(value, 2) <> 0 checks integer oddness. NULL remains unknown and a WHERE clause excludes it.",
+    "body": "In PostgreSQL, use `mod(value, 2) <> 0` to check whether an integer value is odd. This tutorial uses the PostgreSQL dialect and a `bigint` input, so the expression has a defined integer domain. SQL syntax and numeric conversions can differ in other database systems.\n\n## Check a PostgreSQL integer fixture\n\n```sql\nWITH samples(value) AS (\n  VALUES\n    (-15::bigint),\n    (-14::bigint),\n    (0::bigint),\n    (15::bigint),\n    (NULL::bigint)\n)\nSELECT value, mod(value, 2) <> 0 AS is_odd\nFROM samples;\n```\n\nThe negative and positive fifteens produce true; negative fourteen and zero produce false. The missing value produces NULL. That last outcome is useful: missing data has not become a successful even-number check.\n\nPostgreSQL supports both the `mod` function and the `%` remainder operator for appropriate numeric types. Its [mathematical functions reference](https://www.postgresql.org/docs/current/functions-math.html) documents them. Comparing the remainder with zero handles negative odd inputs without assuming that the remainder must be positive one.\n\n## Filter odd IDs and label missing values\n\nTo select rows from a table whose `ticket_id` column is an integer, put the condition directly in the filter:\n\n```sql\nSELECT ticket_id, title\nFROM tickets\nWHERE mod(ticket_id, 2) <> 0\nORDER BY ticket_id;\n```\n\nA WHERE condition keeps rows where its result is true. Rows with a NULL identifier do not pass this predicate. If a report must label missing values, use a separate CASE branch rather than silently converting NULL to zero:\n\n```sql\nSELECT ticket_id,\n       CASE\n         WHEN ticket_id IS NULL THEN 'missing'\n         WHEN mod(ticket_id, 2) <> 0 THEN 'odd'\n         ELSE 'even'\n       END AS parity\nFROM tickets;\n```\n\n## Choose an exact integer domain\n\nChoose the column type before choosing the parity expression. The [numeric type documentation](https://www.postgresql.org/docs/current/datatype-numeric.html) distinguishes exact integer types from decimal and floating-point representations. Applying a nonzero remainder test to an unrestricted fractional value does not establish that it is an odd integer. Avoid casting a decimal column merely to force the expression to run; that conversion changes the value being classified.\n\n## Distinguish stored IDs from row positions\n\nOdd identifier values also differ from every other row in a result set. IDs can have gaps, and ordering can change. If the task is alternating rows, assign row numbers using a deliberate, stable ordering and test those row numbers instead. The ordering should include a unique tie breaker when equal sort keys are possible.\n\nUse a small fixture containing negative, positive, zero, and NULL values when checking a report. If identifiers are imported from text, validate their conversion before loading or classify import failures separately. Finally, inspect the real query plan before adding an index for parity: the usefulness of such an index depends on the query and the distribution of the data.\n\nA reporting label should describe the stored value, and an import-error label should describe the failed conversion. Keeping them separate makes anomalous records easier to investigate.",
+    "related": [
+      "odd-number-python",
+      "odd-number-excel",
+      "odd-number-google-sheets"
+    ],
+    "sources": [
+      {
+        "title": "PostgreSQL mathematical functions and operators",
+        "url": "https://www.postgresql.org/docs/current/functions-math.html"
+      },
+      {
+        "title": "PostgreSQL numeric types",
+        "url": "https://www.postgresql.org/docs/current/datatype-numeric.html"
+      }
+    ]
+  },
+  {
+    "slug": "odd-number-excel",
+    "category": "code",
+    "title": "Check odd numbers in Excel without accepting fractions",
+    "description": "Use Excel ISODD for integer cells, add a whole-number guard, and keep blanks, text, errors, and fractions distinct from even values.",
+    "summary": "ISODD truncates fractions. Check that the cell is numeric and equals INT(cell) before accepting its oddness result.",
+    "body": "Excel provides `ISODD`, which returns a logical result for the integer portion of a number. If a cell is already known to contain an integer, `=ISODD(A2)` is enough. When the worksheet accepts arbitrary input, add validation so a fraction cannot be silently classified as an odd integer.\n\n## Add a validated classification formula\n\n```excel\n=IFERROR(IF(ISNUMBER(A2),IF(A2=INT(A2),ISODD(A2),\"Not an integer\"),\"Not a number\"),\"Input error\")\n```\n\nPut this formula in B2 and fill it down beside your input column. It returns TRUE or FALSE for numeric integers, a specific message for fractions or nonnumeric cells, and an input-error message when the calculation encounters an error. The different outputs keep invalid data visible.\n\n## Reject fractions before checking parity\n\nThe distinction matters because Excel truncates a noninteger argument before `ISODD` checks it. `ISODD(3.8)` therefore returns TRUE, but 3.8 is not itself an odd integer. Microsoft's [ISODD reference](https://support.microsoft.com/en-US/Excel/isodd-function) documents that behavior. The `A2=INT(A2)` guard in the longer formula checks that the original cell is already whole.\n\nTry a small worksheet with these input and expected-result pairs: `-9` gives TRUE, `-8` gives FALSE, `0` gives FALSE, `9` gives TRUE, and `9.25` gives Not an integer. A blank cell or a numeric-looking value deliberately stored as text gives Not a number. An existing cell error gives Input error.\n\nThe negative examples deserve a place in the worksheet. `INT` rounds downward, so a negative fraction such as `-9.25` does not equal its integer result and is correctly rejected. For an actual negative integer, the equality succeeds and `ISODD` checks it normally.\n\n## Use MOD for validated integers\n\nIf your cells are already validated as whole numbers, a remainder formula is an alternative:\n\n```excel\n=MOD(A2,2)<>0\n```\n\nExcel's [MOD reference](https://support.microsoft.com/en-us/excel/functions/mod-function) explains its divisor-sign rule. With the positive divisor two, a negative odd integer still produces a nonzero result. Keep the same whole-number guard when applying this alternative to unvalidated data.\n\n## Preserve original values during review\n\nDo not use `ODD` as a predicate. Its job is to round to an odd integer, so the result is another number rather than a TRUE/FALSE answer. For an audit sheet, displaying an explicit classification is easier to review than changing the original values to fit the desired category.\n\nPreserve the original input column and place formulas beside it. Review the messages before filtering for TRUE, and decide how invalid records should be corrected. If an imported identifier was rounded before it reached the sheet, a parity formula cannot reconstruct the missing digits; retain the original text during the import when exact large identifiers matter.",
+    "related": [
+      "odd-number-google-sheets",
+      "odd-number-sql",
+      "odd-number-bigint"
+    ],
+    "sources": [
+      {
+        "title": "Microsoft Excel ISODD",
+        "url": "https://support.microsoft.com/en-US/Excel/isodd-function"
+      },
+      {
+        "title": "Microsoft Excel MOD",
+        "url": "https://support.microsoft.com/en-us/excel/functions/mod-function"
+      },
+      {
+        "title": "Microsoft Excel IS functions",
+        "url": "https://support.microsoft.com/en-us/excel/functions/is-functions"
+      }
+    ]
+  },
+  {
+    "slug": "odd-number-google-sheets",
+    "category": "code",
+    "title": "Check odd numbers in Google Sheets with clear validation",
+    "description": "Build a Google Sheets parity formula that rejects fractions and text, then highlight odd integer rows without hiding invalid entries.",
+    "summary": "Check ISNUMBER and an integer condition before testing parity. Keep input problems visible instead of labeling them even.",
+    "body": "In Google Sheets, `=ISODD(A2)` is convenient when A2 already contains an integer. For a shared sheet or an imported column, check the input first. A useful classification column should distinguish an even integer from a fraction, text, or a broken formula.\n\n## Build a classification column\n\n```excel\n=IFERROR(IF(ISNUMBER(A2),IF(A2=INT(A2),MOD(A2,2)<>0,\"Not an integer\"),\"Not a number\"),\"Input error\")\n```\n\nEnter the formula in B2 and fill it down for the records you want to inspect. Numeric whole values receive TRUE or FALSE. Fractions receive Not an integer. Text and blank cells receive Not a number. The outer `IFERROR` gives an explicit result when an error reaches the calculation.\n\n## Validate stored types and whole values\n\n`ISNUMBER` checks the stored value's type, not merely whether its displayed characters resemble digits. Google documents that a string such as `\"123\"` fails the check in its [ISNUMBER reference](https://support.google.com/docs/answer/3093296?hl=en). That behavior is helpful when an import has left some rows as text and other rows as numbers.\n\nThe equality with `INT(A2)` tests whether the original numeric value is whole. It rejects both `7.25` and `-7.25`. Only after that validation does the remainder expression classify the number. This makes the worksheet's input policy explicit instead of relying on a parity function to validate fractions.\n\nGoogle's [MOD documentation](https://support.google.com/docs/answer/3093497?hl=en) describes the remainder calculation. With a positive divisor of two, both positive and negative odd integers have nonzero results. Test `-11`, `-10`, `0`, `10`, and `11`: the first and last values should return TRUE.\n\nOnce the numeric column is validated, the shorter `ISODD` expression is easy to read. Its [function reference](https://support.google.com/docs/answer/3093491?hl=en) describes the logical result. Keep the longer validation formula wherever newly entered values still need review; parity and whole-number validation are separate responsibilities.\n\n## Highlight rows containing odd integers\n\nYou can also highlight qualifying rows using a custom conditional-formatting formula. For a range starting on row two and values in column A, use:\n\n```excel\n=IFERROR(AND(ISNUMBER($A2),$A2=INT($A2),MOD($A2,2)<>0),FALSE)\n```\n\nThe dollar sign fixes column A while leaving the row relative to each formatted record. The formula returns false for invalid input, so conditional formatting does not paint an erroneous row as odd. Keep the classification column too if people need to see why a row was excluded.\n\n## Separate cell values from row positions\n\nThese rules inspect cell values, not the parity of row positions. If the task is alternating background colors, use a row-based rule instead. Sorting, inserting rows, and filtering can change positions while leaving the stored number unchanged. Decide which of those two questions the sheet should answer before choosing its formula.",
+    "related": [
+      "odd-number-excel",
+      "odd-number-sql",
+      "odd-number-javascript"
+    ],
+    "sources": [
+      {
+        "title": "Google Sheets ISODD",
+        "url": "https://support.google.com/docs/answer/3093491?hl=en"
+      },
+      {
+        "title": "Google Sheets MOD",
+        "url": "https://support.google.com/docs/answer/3093497?hl=en"
+      },
+      {
+        "title": "Google Sheets ISNUMBER",
+        "url": "https://support.google.com/docs/answer/3093296?hl=en"
+      }
+    ]
+  },
+  {
+    "slug": "odd-number-bigint",
+    "category": "code",
+    "title": "Check odd BigInt values without losing decimal digits",
+    "description": "Validate signed decimal strings and check JavaScript BigInt parity without converting through Number or accepting malformed text.",
+    "summary": "Parse a validated decimal string directly with BigInt, then use n % 2n !== 0n. Never route large integers through Number.",
+    "body": "Use BigInt when an exact integer can exceed JavaScript's safe Number range. For a BigInt value, the oddness check is `n % 2n !== 0n`. Both constants have the `n` suffix so the operation stays within the BigInt type.\n\n## Parse and check exact BigInt values\n\n```js\nfunction isOddBigInt(n) {\n  if (typeof n !== 'bigint') {\n    throw new TypeError('Expected a bigint');\n  }\n  return n % 2n !== 0n;\n}\n\nfunction parseDecimalInteger(text) {\n  if (typeof text !== 'string' || text.trim() !== text ||\n      !/^[+-]?[0-9]+$/.test(text)) {\n    throw new TypeError('Expected signed decimal digits');\n  }\n  return BigInt(text);\n}\n\nconst value = parseDecimalInteger('9007199254740993');\nconsole.log(isOddBigInt(value)); // true\nconsole.log(isOddBigInt(-value)); // true\nconsole.log(isOddBigInt(0n)); // false\n```\n\n## Define the decimal input grammar\n\nThe parser defines a narrow decimal grammar: one optional leading sign followed by one or more ASCII digits. It permits leading zeroes, but rejects an empty string, surrounding whitespace, decimal points, exponent notation, separators, and hexadecimal prefixes. The explicit whitespace check makes the parser’s no-whitespace policy explicit.\n\nThat policy is stricter than simply calling `BigInt` on arbitrary text. Keep it visible so a caller knows exactly what the input field accepts. If your application intentionally accepts surrounding spaces, trim the value before this parser and document that boundary behavior.\n\n## Preserve precision and numeric types\n\nMost importantly, the parser passes the original string directly to BigInt. Do not insert `Number(text)` or `parseInt(text)` in between. An earlier conversion can round away a significant final digit before BigInt receives the value. The [BigInt reference explains the separate numeric type and conversion concerns](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt).\n\nNegative odd BigInts can have a remainder of `-1n` when divided by `2n`. Checking for a nonzero remainder handles either sign. Mixing `2` with a BigInt operand throws instead of automatically upgrading the Number. [The remainder reference documents both behaviors](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Remainder).\n\n## Test parsing and serialize exact values\n\nExercise the text boundary independently from the calculation:\n\n```js\nfor (const text of ['', '3.5', '1e3', '0xff', '7\\n']) {\n  try {\n    parseDecimalInteger(text);\n    throw new Error('Unexpected acceptance');\n  } catch (error) {\n    if (!(error instanceof TypeError)) throw error;\n  }\n}\n```\n\nWhen sending the value through JSON, serialize the decimal text, for example `{ id: value.toString() }`. Parse that text explicitly on receipt. Standard JSON numeric values do not provide a BigInt type, and the default JSON serializer does not directly serialize BigInt values.\n\nUse this approach for large counters or exact numeric identifiers whose digits matter. If an identifier is not conceptually a number, preserve it as text throughout instead; formatting details such as leading zeroes may be meaningful even though they do not affect parity.\n\nThe function intentionally rejects even small Number values such as `3`. If your code has a mixed numeric interface, choose and document a conversion policy before invoking it. Keeping that policy outside the predicate makes accidental Number input detectable during testing.",
+    "related": [
+      "odd-number-javascript",
+      "odd-number-typescript",
+      "odd-number-python"
+    ],
+    "sources": [
+      {
+        "title": "MDN: BigInt",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt"
+      },
+      {
+        "title": "MDN: remainder operator",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Remainder"
+      }
+    ]
+  }
+]

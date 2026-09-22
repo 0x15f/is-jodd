@@ -1,0 +1,287 @@
+[
+  {
+    "slug": "how-to-tell-if-a-number-is-odd",
+    "category": "learn",
+    "title": "How to tell if a number is odd",
+    "description": "Check an integer’s last digit, divide it by two, or write it as 2k + 1. Learn three exact methods with examples and input tips.",
+    "summary": "An integer is odd when it cannot be split into two equal integer groups. In decimal notation, its last digit is 1, 3, 5, 7, or 9.",
+    "body": "## Start with the last digit\n\nFor an integer written in ordinary decimal notation, look at the final digit. A final 1, 3, 5, 7, or 9 means odd. A final 0, 2, 4, 6, or 8 means even. This is the familiar divisibility test for two described in the [College of the Desert’s number theory material](https://math.libretexts.org/Courses/College_of_the_Desert/College_of_the_Desert_MATH_011%3A_Math_Concepts_for_Elementary_School_Teachers__Number_Systems/12%3A_Number_Theory/12.03%3A_Divisibility_Tests).\n\nFor example, 381 is odd because it ends in 1. The earlier digits do not need to be added, multiplied, or interviewed. The number 6,284 is even because it ends in 4. A minus sign does not change the answer: −381 is odd too.\n\n## Check by making pairs\n\nImagine 13 counters. Arrange them into pairs, and you get six complete pairs with one counter left. That leftover counter identifies an odd count. With 14 counters, all seven pairs are complete.\n\nThis picture is useful for positive counts. For negative integers, use the arithmetic definition instead of trying to assemble a negative pile of counters.\n\nAnother check is division: 381 ÷ 2 = 190.5, so the result is not an integer. By comparison, 382 ÷ 2 = 191, which is an integer. Apply this test only after establishing that the original value is an integer.\n\n## Write down the proof\n\nAn odd integer has the form `n = 2k + 1`, where `k` is an integer. For 381, choose `k = 190`:\n\n`381 = 2 × 190 + 1`.\n\nFor −27, choose `k = −14`:\n\n`−27 = 2 × (−14) + 1`.\n\nThese equations are exact demonstrations, not estimates. Finding one suitable integer value of `k` is enough.\n\n## Check the input before the answer\n\nParity applies to integers. The number 3.7 is neither odd nor even under the usual definition. The notation 3.0, however, represents the integer 3, so that value is odd. A decimal point alone does not decide anything.\n\nThe [calculator](/) accepts decimal integer notation without a decimal point. Enter `3` for the value written as `3.0`, and enter `6284` without a thousands separator. See [decimals and parity](/learn/are-decimals-odd-or-even/) for the distinction between a number and its spelling.\n\nTry 205, −48, and 0 before checking: the answers are odd, even, and even. Zero passes the same rule as every other integer; it does not need its own exemption form.",
+    "related": [
+      "last-digit-test-for-odd-numbers",
+      "what-is-an-odd-integer",
+      "are-decimals-odd-or-even"
+    ],
+    "sources": [
+      {
+        "title": "College of the Desert: Divisibility Tests",
+        "url": "https://math.libretexts.org/Courses/College_of_the_Desert/College_of_the_Desert_MATH_011%3A_Math_Concepts_for_Elementary_School_Teachers__Number_Systems/12%3A_Number_Theory/12.03%3A_Divisibility_Tests"
+      },
+      {
+        "title": "Barrus and Clark: The Division Algorithm",
+        "url": "https://math.libretexts.org/Bookshelves/Combinatorics_and_Discrete_Mathematics/Elementary_Number_Theory_(Barrus_and_Clark)/01:_Chapters/1.05:_The_Division_Algorithm"
+      }
+    ]
+  },
+  {
+    "slug": "what-is-an-odd-integer",
+    "category": "learn",
+    "title": "What is an odd integer?",
+    "description": "Understand the definition n = 2k + 1, including negative odd integers, equivalent formulas, and why integers cannot be both odd and even.",
+    "summary": "An odd integer is any number equal to 2k + 1 for some integer k. The definition includes positive and negative values, but excludes zero.",
+    "body": "## The definition has two requirements\n\nAn odd integer is a number `n` that can be written as `2k + 1` for an integer `k`. Both parts matter: the formula gives the shape, and the word integer restricts the permitted values of `k`. This is the definition used in [Barrus and Clark’s number theory text](https://math.libretexts.org/Bookshelves/Combinatorics_and_Discrete_Mathematics/Elementary_Number_Theory_(Barrus_and_Clark)/01:_Chapters/1.05:_The_Division_Algorithm).\n\nIntegers include the negative counting numbers, zero, and the positive counting numbers. They do not include values such as 2.4 or one third. A number’s notation can look fractional while its value is an integer: 12/4 equals 3.\n\n## Generate some examples\n\nChoose a value of `k`, double it, and add one:\n\n| k | 2k + 1 | Odd integer |\n| --- | --- | --- |\n| −4 | −8 + 1 | −7 |\n| −1 | −2 + 1 | −1 |\n| 0 | 0 + 1 | 1 |\n| 6 | 12 + 1 | 13 |\n\nAs `k` increases by one, the resulting odd integer increases by two. This produces the sequence …, −7, −5, −3, −1, 1, 3, 5, 7, … . It continues in both directions.\n\nThe expression `2k − 1` describes the same set when `k` ranges over all integers. For example, 13 is both `2 × 6 + 1` and `2 × 7 − 1`. The index changes; the number does not.\n\n## Why an integer cannot be both\n\nSuppose one integer were even and odd. Then it would satisfy `n = 2a` and `n = 2b + 1` for integers `a` and `b`. Subtracting gives `2(a − b) = 1`, or `a − b = 1/2`. The difference between two integers cannot be one half. That contradiction rules out being both.\n\nEvery integer also falls into one of the two groups: dividing by two leaves the mathematical remainder zero or one. There is no third integer remainder between them.\n\n## Use the definition in a question\n\nTo test 57, solve `k = (57 − 1) / 2 = 28`. Because 28 is an integer, 57 is odd. For 58, the same calculation gives 28.5, so it fails the odd definition.\n\nThe [calculator](/) gives a quick classification for decimal integer input. Enter `57`, not an expression such as `(2*28)+1`. For more context, read [why zero is even](/learn/is-zero-odd-or-even/) or see how [negative integers fit the definition](/learn/can-negative-numbers-be-odd/).",
+    "related": [
+      "how-to-tell-if-a-number-is-odd",
+      "can-negative-numbers-be-odd",
+      "is-zero-odd-or-even"
+    ],
+    "sources": [
+      {
+        "title": "Barrus and Clark: The Division Algorithm",
+        "url": "https://math.libretexts.org/Bookshelves/Combinatorics_and_Discrete_Mathematics/Elementary_Number_Theory_(Barrus_and_Clark)/01:_Chapters/1.05:_The_Division_Algorithm"
+      },
+      {
+        "title": "OpenStax: Rational and Irrational Numbers",
+        "url": "https://openstax.org/books/prealgebra/pages/7-1-rational-and-irrational-numbers"
+      }
+    ]
+  },
+  {
+    "slug": "is-zero-odd-or-even",
+    "category": "learn",
+    "title": "Is zero odd or even?",
+    "description": "Zero is even because 0 = 2 × 0. See the definition, the number-line pattern, and the difference between dividing zero and dividing by zero.",
+    "summary": "Zero is even. It is twice the integer zero, and there is no integer k for which 0 = 2k + 1.",
+    "body": "## Zero satisfies the even definition\n\nAn integer is even if it equals twice an integer. Zero qualifies immediately:\n\n`0 = 2 × 0`.\n\nNo special rule is needed. Zero meets the same condition as 8, which equals `2 × 4`, and −8, which equals `2 × (−4)`. The [division algorithm treatment in SUNY Schenectady’s discrete structures text](https://math.libretexts.org/Courses/SUNY_Schenectady_County_Community_College/Discrete_Structures/03%3A_Constructing_and_Writing_Proofs_in_Mathematics/3.05%3A_The_Division_Algorithm_and_Congruence) classifies integers by their remainder after division by two.\n\nTo test whether zero could be odd, try the other definition: `0 = 2k + 1`. Solving gives `k = −1/2`. That is not an integer, so zero does not satisfy the odd definition.\n\n## The pattern crosses zero without a gap\n\nRead these consecutive integers from left to right:\n\n| Integer | Classification |\n| --- | --- |\n| −3 | Odd |\n| −2 | Even |\n| −1 | Odd |\n| 0 | Even |\n| 1 | Odd |\n| 2 | Even |\n| 3 | Odd |\n\nThe alternating pattern continues through zero. If zero were excluded, the labels would develop an unnecessary hole exactly where the arithmetic stays perfectly ordinary.\n\nA grouping picture works too. Zero objects can be divided into two equal groups containing zero objects each. There are no unmatched objects. Having nothing to pair is different from having one object left over.\n\n## Dividing zero is allowed\n\n`0 ÷ 2 = 0` is valid. The divisor is two, and the quotient is an integer. That is another way to recognize zero as even.\n\n`2 ÷ 0` is a different expression and is undefined in ordinary real-number arithmetic. Reversing the order of a division changes the question. The rule against dividing by zero does not prevent zero from being divided by a nonzero number.\n\n## Other facts agree with the answer\n\nAdding zero leaves parity unchanged: `17 + 0 = 17` and `18 + 0 = 18`. Adding any even integer has the same effect on parity. Multiplying an integer by zero produces zero, an even result.\n\nZero is neither positive nor negative, but sign and parity are separate classifications. A number can be neutral in sign while still being even.\n\nIn mathematical notation, `0.0` and `−0` represent the same integer zero. The [calculator](/) uses integer notation without a decimal point, so enter `0`. For related edge cases, see [negative odd numbers](/learn/can-negative-numbers-be-odd/) and [decimals versus integer values](/learn/are-decimals-odd-or-even/).",
+    "related": [
+      "what-is-an-odd-integer",
+      "can-negative-numbers-be-odd",
+      "are-decimals-odd-or-even"
+    ],
+    "sources": [
+      {
+        "title": "SUNY Schenectady: The Division Algorithm and Congruence",
+        "url": "https://math.libretexts.org/Courses/SUNY_Schenectady_County_Community_College/Discrete_Structures/03%3A_Constructing_and_Writing_Proofs_in_Mathematics/3.05%3A_The_Division_Algorithm_and_Congruence"
+      },
+      {
+        "title": "OpenStax: Rational and Irrational Numbers",
+        "url": "https://openstax.org/books/prealgebra/pages/7-1-rational-and-irrational-numbers"
+      }
+    ]
+  },
+  {
+    "slug": "can-negative-numbers-be-odd",
+    "category": "learn",
+    "title": "Can negative numbers be odd?",
+    "description": "Negative integers can be odd or even. Learn why sign does not change parity and why JavaScript’s negative remainder needs a careful test.",
+    "summary": "Yes. Negative integers follow exactly the same odd/even classification as their positive opposites: −9 is odd and −10 is even.",
+    "body": "## A minus sign does not change parity\n\nNegative integers can be odd. The sequence includes …, −9, −7, −5, −3, −1. Negative even integers include …, −10, −8, −6, −4, −2. The sign tells you which side of zero the number occupies; parity tells you about divisibility by two.\n\nThe mathematical definitions use an integer multiplier, and that multiplier is allowed to be negative. There is no requirement that an odd number be a positive count of physical objects.\n\n## Check the definition directly\n\nAn odd integer can be written as `2k + 1`. Here are three examples with negative values:\n\n- `−13 = 2 × (−7) + 1`.\n- `−5 = 2 × (−3) + 1`.\n- `−1 = 2 × (−1) + 1`.\n\nBy contrast, `−12 = 2 × (−6)` is even. Its half is the integer −6.\n\nFor a general proof, suppose `n = 2k + 1` is odd. Then its opposite is `−n = −2k − 1 = 2(−k − 1) + 1`. Because `−k − 1` is an integer, the opposite is also odd. This calculation explains why taking the absolute value preserves parity.\n\nYou can therefore inspect the final digit of the magnitude. The integer −8,437 ends in 7 and is odd. The integer −8,430 ends in 0 and is even.\n\n## Be careful with programming remainders\n\nIn mathematical modulo with a positive divisor, −13 modulo 2 is 1: `−13 = 2 × (−7) + 1`.\n\nJavaScript’s `%` operator uses a different remainder convention for negative inputs. It gives `-13 % 2 === -1`, as described in [MDN’s remainder reference](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Remainder). Consequently, checking only `n % 2 === 1` misses negative odd integers.\n\nFor a validated integer, use `n % 2 !== 0`. The nonzero remainder can be either 1 or −1. Zero identifies evenness in both conventions. See [modulo versus remainder](/learn/modulo-vs-remainder/) for the full distinction.\n\n## Keep fractions out of the classification\n\nThe value −3.5 is neither odd nor even because it is not an integer. Rounding it first would answer a different question. The notation −3.0 represents the integer −3, which is odd.\n\nEnter `-3` in the [calculator](/), using integer notation without a decimal point. Try −21, −22, and −23: the results should alternate odd, even, odd, just as they do on the positive side of zero.",
+    "related": [
+      "what-is-an-odd-integer",
+      "modulo-vs-remainder",
+      "last-digit-test-for-odd-numbers"
+    ],
+    "sources": [
+      {
+        "title": "Barrus and Clark: The Division Algorithm",
+        "url": "https://math.libretexts.org/Bookshelves/Combinatorics_and_Discrete_Mathematics/Elementary_Number_Theory_(Barrus_and_Clark)/01:_Chapters/1.05:_The_Division_Algorithm"
+      },
+      {
+        "title": "MDN: Remainder (%)",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Remainder"
+      }
+    ]
+  },
+  {
+    "slug": "are-decimals-odd-or-even",
+    "category": "learn",
+    "title": "Are decimals odd or even?",
+    "description": "Non-integer decimals are neither odd nor even, but 3.0 is an odd integer value. Separate mathematical value from decimal notation and input syntax.",
+    "summary": "Odd and even describe integer values. A decimal such as 3.4 is neither; a decimal such as 3.0 equals the odd integer 3.",
+    "body": "## Classify the value, not the punctuation\n\nA non-integer decimal such as 4.7 is neither odd nor even. But saying that every number with a decimal point is excluded goes too far: `3.0 = 3`, and 3 is an odd integer. Likewise, `8.000 = 8`, which is even.\n\nThe relevant question is whether the value is an integer. Decimal notation is only one way of writing it. [OpenStax’s introduction to number classifications](https://openstax.org/books/prealgebra/pages/7-1-rational-and-irrational-numbers) distinguishes integers from the larger set of rational numbers, which also contains non-integer fractions and terminating decimals.\n\n| Written value | Integer? | Parity |\n| --- | --- | --- |\n| 3.0 | Yes, equals 3 | Odd |\n| 8.000 | Yes, equals 8 | Even |\n| −7.00 | Yes, equals −7 | Odd |\n| 2.5 | No | Neither |\n| 0.0 | Yes, equals 0 | Even |\n\n## Why the odd formula excludes 2.5\n\nAn odd integer has the form `2k + 1` for an integer `k`. If you try `2.5 = 2k + 1`, the solution is `k = 0.75`. Since 0.75 is not an integer, the definition fails.\n\nIt is not enough to say that 2.5 cannot be divided into two equal integer groups. That description alone could accidentally classify every non-integer as odd. The starting requirement, that the number itself be an integer, is essential.\n\nFractions need the same care. `15/5` equals 3 and is odd. `15/4` equals 3.75 and has no integer parity. Simplify or evaluate the value before attaching the label.\n\n## Do not inspect the last displayed decimal digit\n\nThe final character of `3.0` is zero, but its value is odd. The last-digit shortcut applies to decimal integer notation, such as `3`, without a fractional part.\n\nTrailing zeros after a decimal point do not change value: `3.0 = 3.00`. Appending a zero to the integer `3` produces `30`, a different number. The location of that little dot is doing actual work.\n\n## What to enter in the calculator\n\nThe [calculator](/) accepts decimal integer notation without a decimal point. Enter `3` for `3.0`, `8` for `8.000`, and `-7` for `−7.00`. A rejected spelling does not change the mathematical classification of its value.\n\nDo not round a value such as 2.5 merely to obtain an odd/even result. Rounding creates a new value, and different rounding choices can produce different parity. For programming inputs, also consider [large-integer precision](/learn/large-integer-parity/): a stored approximation can differ from the number originally typed.",
+    "related": [
+      "what-is-an-odd-integer",
+      "last-digit-test-for-odd-numbers",
+      "large-integer-parity"
+    ],
+    "sources": [
+      {
+        "title": "OpenStax: Rational and Irrational Numbers",
+        "url": "https://openstax.org/books/prealgebra/pages/7-1-rational-and-irrational-numbers"
+      },
+      {
+        "title": "MDN: Number.isInteger()",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/isInteger"
+      }
+    ]
+  },
+  {
+    "slug": "odd-and-even-number-rules",
+    "category": "learn",
+    "title": "Odd and even number rules",
+    "description": "Predict parity for addition, subtraction, multiplication, and powers. See the algebra behind the rules and why division needs more information.",
+    "summary": "Equal parities add to even; different parities add to odd. A product is odd only when every factor is odd.",
+    "body": "## Addition and subtraction\n\nFor integers, there are just three addition cases:\n\n| Calculation | Result | Example |\n| --- | --- | --- |\n| Even + even | Even | 14 + 8 = 22 |\n| Even + odd | Odd | 14 + 9 = 23 |\n| Odd + odd | Even | 15 + 9 = 24 |\n\nSubtraction follows the same parity pattern: equal parities give an even difference, and different parities give an odd difference. The difference can be negative without changing the rule. For example, `5 − 12 = −7` is odd.\n\nA useful mental shortcut is that adding or subtracting an even integer preserves parity. Adding or subtracting an odd integer flips it. This follows directly from treating parity as the two remainder classes discussed in the [SUNY Schenectady congruence lesson](https://math.libretexts.org/Courses/SUNY_Schenectady_County_Community_College/Discrete_Structures/03%3A_Constructing_and_Writing_Proofs_in_Mathematics/3.05%3A_The_Division_Algorithm_and_Congruence).\n\n## Why two odd integers add to even\n\nWrite the odd integers as `2a + 1` and `2b + 1`, with integer values of `a` and `b`. Their sum is:\n\n`(2a + 1) + (2b + 1) = 2(a + b + 1)`.\n\nThe quantity inside the parentheses is an integer, so the sum is twice an integer. That proves the rule for every pair of odd integers, including negative ones.\n\nFor several terms, pair up the odd terms. An even count of odd terms gives an even sum; an odd count gives an odd sum. Any even terms can be ignored when determining only parity.\n\n## Multiplication and powers\n\nA product with an even factor is even because that factor already contains a factor of two. A product of two odd integers is odd:\n\n`(2a + 1)(2b + 1) = 2(2ab + a + b) + 1`.\n\nRepeated multiplication extends the rule: every positive integer power of an odd integer is odd. Every positive integer power of an even integer is even. For a nonzero base, the zeroth power is 1, so the positive-exponent condition matters.\n\n## Division does not fit a simple table\n\nAn even integer divided by an even integer can produce either parity: `18 ÷ 2 = 9`, while `20 ÷ 2 = 10`. It can also produce a non-integer, as in `6 ÷ 4 = 1.5`. Check the actual quotient before classifying it.\n\nTry predicting `31 + 44 + 17` without calculating the total. Two odd terms combine to even, and the remaining term is even, so the sum is even. Its total, 92, confirms the prediction. Use the [calculator](/) to check a resulting integer, or review the [odd-integer definition](/learn/what-is-an-odd-integer/) behind these proofs.",
+    "related": [
+      "what-is-an-odd-integer",
+      "is-zero-odd-or-even",
+      "common-odd-number-mistakes"
+    ],
+    "sources": [
+      {
+        "title": "SUNY Schenectady: The Division Algorithm and Congruence",
+        "url": "https://math.libretexts.org/Courses/SUNY_Schenectady_County_Community_College/Discrete_Structures/03%3A_Constructing_and_Writing_Proofs_in_Mathematics/3.05%3A_The_Division_Algorithm_and_Congruence"
+      },
+      {
+        "title": "Barrus and Clark: The Division Algorithm",
+        "url": "https://math.libretexts.org/Bookshelves/Combinatorics_and_Discrete_Mathematics/Elementary_Number_Theory_(Barrus_and_Clark)/01:_Chapters/1.05:_The_Division_Algorithm"
+      }
+    ]
+  },
+  {
+    "slug": "last-digit-test-for-odd-numbers",
+    "category": "learn",
+    "title": "The last-digit test for odd numbers",
+    "description": "Learn why decimal integers ending in 1, 3, 5, 7, or 9 are odd, including the proof, negative numbers, leading zeros, and common traps.",
+    "summary": "For an integer written in base ten, only its final digit determines parity. Everything before that digit contributes a multiple of ten.",
+    "body": "## The rule\n\nAn integer written in decimal notation is odd if its final digit is 1, 3, 5, 7, or 9. It is even if the final digit is 0, 2, 4, 6, or 8. This is the divisibility-by-two test listed in [Hartnell College’s number theory material](https://math.libretexts.org/Courses/Hartnell_College/Mathematics_for_Elementary_Teachers/09%3A_Number_Theory/9.01%3A_Digital_Roots_and_Divisibility).\n\nFor 72,419, inspect the 9. For 72,418, inspect the 8. Reading the other digits is optional if parity is the only question.\n\n## Why earlier digits cannot affect the result\n\nTake a nonnegative integer and separate its final digit from the preceding digits. You can write the number as `10q + d`, where `q` is an integer and `d` is its final digit.\n\nFor example, `72,419 = 10 × 7,241 + 9`. The first part, `10 × 7,241`, is even because ten contains a factor of two. Adding an even number preserves parity, so the entire number has the same parity as 9.\n\nMore formally, if `d = 2r + 1`, then `10q + d = 2(5q + r) + 1`, which is odd. If `d = 2r`, then `10q + d = 2(5q + r)`, which is even.\n\nFor a negative integer, apply the argument to its magnitude. Changing the sign does not change divisibility by two.\n\n## Leading zeros and very long numbers\n\nLeading zeros leave an integer’s value unchanged: `00073` represents 73 and is odd. They do not move the last digit. Similarly, a decimal integer with hundreds of digits still obeys the same test.\n\nSoftware can preserve those digits as text, validate the entire input, and then inspect the final digit. Validation matters: the string `hello7` ends with an odd digit but is not a decimal integer. The shortcut saves arithmetic, not the obligation to read the input correctly.\n\n## Three tempting shortcuts that fail\n\nAdding digits is useful for certain other divisibility tests, but it does not determine parity. The odd integer 17 has digit sum 8, while the even integer 12 has digit sum 3.\n\nA decimal point changes which shortcut applies. The value `7.0` is odd despite its last displayed zero; rewrite it as the integer `7` first.\n\nBase also matters. In base three, `11` means four in decimal, so an ending 1 does not imply an odd value. The [binary version](/learn/binary-odd-numbers/) works because two, like ten, is even.\n\nUse ordinary decimal integer notation in the [calculator](/). For exact inputs beyond JavaScript’s usual integer range, see [large-integer parity](/learn/large-integer-parity/).",
+    "related": [
+      "how-to-tell-if-a-number-is-odd",
+      "binary-odd-numbers",
+      "large-integer-parity"
+    ],
+    "sources": [
+      {
+        "title": "Hartnell College: Digital Roots and Divisibility",
+        "url": "https://math.libretexts.org/Courses/Hartnell_College/Mathematics_for_Elementary_Teachers/09%3A_Number_Theory/9.01%3A_Digital_Roots_and_Divisibility"
+      },
+      {
+        "title": "College of the Desert: Divisibility Tests",
+        "url": "https://math.libretexts.org/Courses/College_of_the_Desert/College_of_the_Desert_MATH_011%3A_Math_Concepts_for_Elementary_School_Teachers__Number_Systems/12%3A_Number_Theory/12.03%3A_Divisibility_Tests"
+      },
+      {
+        "title": "SUNY Schenectady: The Division Algorithm and Congruence",
+        "url": "https://math.libretexts.org/Courses/SUNY_Schenectady_County_Community_College/Discrete_Structures/03%3A_Constructing_and_Writing_Proofs_in_Mathematics/3.05%3A_The_Division_Algorithm_and_Congruence"
+      }
+    ]
+  },
+  {
+    "slug": "modulo-vs-remainder",
+    "category": "learn",
+    "title": "Modulo versus remainder when testing odd numbers",
+    "description": "Understand why −7 modulo 2 is 1 while JavaScript returns −1 for -7 % 2, and write an odd-number test that handles both signs.",
+    "summary": "Mathematical modulo and JavaScript remainder agree for positive integers but differ for negative ones. A validated integer is odd when its remainder by two is nonzero.",
+    "body": "## Positive examples hide the difference\n\nFor a positive integer such as 7, both mathematical modulo and JavaScript’s remainder produce 1 when dividing by two. That makes `n % 2 === 1` look like a complete odd-number test. Negative integers expose the missing case.\n\nIn the usual mathematical convention with positive divisor two, `−7 mod 2 = 1`. JavaScript evaluates `-7 % 2` to `-1`. Both calculations can be internally consistent because they choose different integer quotients.\n\n## Two valid equations, different conventions\n\nThe mathematical division algorithm requires a remainder at least zero and less than the positive divisor. Therefore:\n\n`−7 = 2 × (−4) + 1`.\n\nHere the quotient is −4 and the remainder is 1. This is the convention defined in the [Barrus and Clark division-algorithm chapter](https://math.libretexts.org/Bookshelves/Combinatorics_and_Discrete_Mathematics/Elementary_Number_Theory_(Barrus_and_Clark)/01:_Chapters/1.05:_The_Division_Algorithm).\n\nJavaScript’s remainder follows the dividend’s sign, using the quotient truncated toward zero:\n\n`−7 = 2 × (−3) − 1`.\n\nThe quotient is −3, leaving −1. [MDN documents this behavior for `%`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Remainder). Calling the operator modulo without explaining the convention is where many otherwise sensible examples go wrong.\n\n## Test the property you actually need\n\nFor parity, you do not need to normalize the remainder into a positive value. You only need to know whether division by two leaves zero:\n\n```js\nfunction isOddInteger(n) {\n  if (!Number.isSafeInteger(n)) {\n    throw new TypeError('Expected a safe integer');\n  }\n  return n % 2 !== 0;\n}\n```\n\nThis returns true for 7 and −7, and false for 8, −8, and 0. The safe-integer guard also rejects fractions, infinities, and numeric values whose integer precision should not be trusted.\n\nWith an existing BigInt, use `n % 2n !== 0n`. Keep the operands in the same numeric type. The formula is the same; the literal syntax differs.\n\n## When normalization is useful\n\nIf you need a canonical mathematical residue, such as an index in a two-position cycle, use `((n % 2) + 2) % 2` for validated integer inputs. That converts a negative remainder of −1 into 1.\n\nDo not use a nonzero remainder as a parity test for arbitrary values. For example, `2.5 % 2` is nonzero, but 2.5 is not an odd integer. The input check is part of the algorithm.\n\nTry positive and negative counterparts in the [calculator](/), and read [negative-number parity](/learn/can-negative-numbers-be-odd/) for the direct mathematical proof.",
+    "related": [
+      "can-negative-numbers-be-odd",
+      "large-integer-parity",
+      "common-odd-number-mistakes"
+    ],
+    "sources": [
+      {
+        "title": "Barrus and Clark: The Division Algorithm",
+        "url": "https://math.libretexts.org/Bookshelves/Combinatorics_and_Discrete_Mathematics/Elementary_Number_Theory_(Barrus_and_Clark)/01:_Chapters/1.05:_The_Division_Algorithm"
+      },
+      {
+        "title": "MDN: Remainder (%)",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Remainder"
+      },
+      {
+        "title": "MDN: Number.MAX_SAFE_INTEGER",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/MAX_SAFE_INTEGER"
+      }
+    ]
+  },
+  {
+    "slug": "binary-odd-numbers",
+    "category": "learn",
+    "title": "Odd numbers in binary",
+    "description": "An integer’s last binary digit determines whether its value is odd. Learn the place-value proof and avoid confusing value parity with bit-count parity.",
+    "summary": "A nonnegative integer in binary is odd when its final bit is 1. Every other binary place is worth an even power-of-two amount.",
+    "body": "## Look at the rightmost bit\n\nIn binary notation, a nonnegative integer is odd when its final digit is 1 and even when its final digit is 0. For example, binary `101101` is odd, while binary `101100` is even.\n\nBinary uses powers of two for its place values: from right to left, they are 1, 2, 4, 8, 16, 32, and so on. This positional system is explained in [Stephen Davies’s binary-number chapter](https://math.libretexts.org/Bookshelves/Combinatorics_and_Discrete_Mathematics/A_Cool_Brisk_Walk_Through_Discrete_Mathematics_(Davies)/07:_Counting/7.4:_Binary_(base_2)).\n\n## Expand one example\n\nThe binary numeral `101101` represents:\n\n`32 + 8 + 4 + 1 = 45`.\n\nThe contributions 32, 8, and 4 are all even. Their sum is even, and the final 1 makes the total odd. Removing that final contribution gives `101100`, which represents 44.\n\nThis works for every nonnegative binary integer. All positions except the rightmost have weights divisible by two. Their total can be written as `2k`. The final bit adds either zero or one, producing `2k` or `2k + 1`.\n\nA long string of bits does not require a long proof. The argument already covers every earlier position.\n\n## Value parity is different from bit-count parity\n\nThe phrase parity bit sometimes refers to whether a bit string contains an odd or even number of 1s. That is a different question from whether the represented integer is odd.\n\nFor example, binary `11` contains two 1s, so its count of set bits is even. But its numerical value is 3, which is odd. Binary `100` contains one 1, yet represents the even integer 4.\n\nTo classify the integer’s value, inspect the rightmost bit. To classify the number of set bits, count them. These tasks share terminology, which is thoughtful of nobody.\n\n## Negative numbers and code\n\nA minus sign applied to a binary magnitude does not change parity: `−101` in signed mathematical binary notation represents −5, an odd integer. When working with a machine’s signed representation, specify the representation before interpreting its bit pattern.\n\nFor an exact JavaScript example using BigInt:\n\n```js\nconst value = BigInt('0b101101');\nconst odd = (value & 1n) === 1n;\n```\n\nThe bitwise AND retains only the lowest bit. A [BigInt remainder test](/learn/large-integer-parity/) is another readable choice and avoids needing to reason about a bit mask.\n\nThe [calculator](/) expects decimal integer notation, so enter `45` for binary `101101`. Do not enter the binary digits as though they were decimal; that would ask about a different number.",
+    "related": [
+      "last-digit-test-for-odd-numbers",
+      "large-integer-parity",
+      "what-is-an-odd-integer"
+    ],
+    "sources": [
+      {
+        "title": "Stephen Davies: Binary (base 2)",
+        "url": "https://math.libretexts.org/Bookshelves/Combinatorics_and_Discrete_Mathematics/A_Cool_Brisk_Walk_Through_Discrete_Mathematics_(Davies)/07:_Counting/7.4:_Binary_(base_2)"
+      },
+      {
+        "title": "MDN: BigInt",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt"
+      }
+    ]
+  },
+  {
+    "slug": "large-integer-parity",
+    "category": "learn",
+    "title": "How to check the parity of a large integer",
+    "description": "Keep large integers exact with digit strings or BigInt. Learn why converting 9007199254740993 to a JavaScript Number can reverse the answer.",
+    "summary": "A huge decimal integer still needs only its final digit for parity. Preserve its exact digits before converting or calculating.",
+    "body": "## Size does not complicate the mathematics\n\nA decimal integer ending in 9 is odd whether it contains two digits or two hundred. The [last-digit proof](/learn/last-digit-test-for-odd-numbers/) depends on place value, not on the number’s size. Earlier decimal places contribute multiples of ten, which are even.\n\nThe complication usually comes from storing the number in software. If the stored value differs from the typed value, a perfect parity test can still answer the wrong question.\n\n## Watch the JavaScript precision boundary\n\nJavaScript’s largest safe integer is `9,007,199,254,740,991`, or `2^53 − 1`, according to [MDN’s MAX_SAFE_INTEGER reference](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/MAX_SAFE_INTEGER). Above the safe range, Number cannot distinguish every consecutive integer.\n\nFor example, converting the decimal string `\"9007199254740993\"` to Number produces `9007199254740992`. The original integer ends in 3 and is odd; the stored number ends in 2 and is even.\n\nSome larger integers remain exactly representable. The problem is that the representation no longer preserves all neighboring integers, so magnitude alone does not tell you which individual conversions were accurate.\n\n## Preserve text until you choose an exact method\n\nIf your only task is parity, validate the complete decimal integer string and inspect its last digit. For a format allowing an optional sign and one or more ordinary decimal digits:\n\n```js\nfunction oddDecimalInteger(text) {\n  if (!/^[+-]?[0-9]+$/.test(text)) {\n    throw new TypeError('Expected decimal integer digits');\n  }\n  return /[13579]$/.test(text);\n}\n```\n\nThis deliberately rejects commas, decimal points, exponents, and trailing text. Leading zeros do not change the result. The final-digit decision is tiny, but validating a long string still requires examining the input; calling the whole operation constant-time would overstate things.\n\n## Use BigInt when you also need arithmetic\n\nCreate BigInt directly from the original string:\n\n```js\nconst n = BigInt('9007199254740993');\nconst odd = n % 2n !== 0n;\n```\n\nDo not convert through Number first. `BigInt(Number(text))` cannot restore digits already lost during the Number conversion. BigInt operands also use BigInt literals such as `2n` and `0n`.\n\nWhen values arrive through JSON, an exact decimal string can preserve an integer that a JSON numeric value would lose during parsing. Keep that representation choice consistent through your application.\n\nUse the [calculator](/) with the original decimal integer digits, without a decimal point or separators. If you are copying from a spreadsheet or export, verify that the source has not already rounded the value; an exact checker cannot recover missing information.",
+    "related": [
+      "last-digit-test-for-odd-numbers",
+      "modulo-vs-remainder",
+      "common-odd-number-mistakes"
+    ],
+    "sources": [
+      {
+        "title": "MDN: Number.MAX_SAFE_INTEGER",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/MAX_SAFE_INTEGER"
+      },
+      {
+        "title": "MDN: BigInt",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt"
+      }
+    ]
+  },
+  {
+    "slug": "odd-numbers-and-prime-numbers",
+    "category": "learn",
+    "title": "Odd numbers and prime numbers are different",
+    "description": "All primes greater than two are odd, but many odd numbers are composite. Understand the distinction with examples, proofs, and the special case of one.",
+    "summary": "Odd means not divisible by two. Prime means a positive integer greater than one with exactly two positive divisors. Only the prime 2 is even.",
+    "body": "## Ask two different questions\n\nParity asks whether an integer is divisible by two. Primality asks whether a positive integer greater than one has any positive divisors besides one and itself. These properties overlap, but one does not replace the other.\n\nThe elementary definitions and the exceptional even prime 2 are covered in [OpenStax’s introduction to whole numbers](https://openstax.org/books/elementary-algebra/pages/1-1-introduction-to-whole-numbers). A quick comparison makes the distinction concrete:\n\n| Number | Parity | Prime status |\n| --- | --- | --- |\n| 1 | Odd | Neither prime nor composite |\n| 2 | Even | Prime |\n| 3 | Odd | Prime |\n| 9 | Odd | Composite: 3 × 3 |\n| 14 | Even | Composite: 2 × 7 |\n| 25 | Odd | Composite: 5 × 5 |\n\n## Why every prime above two is odd\n\nSuppose a positive even integer is greater than two. It has 1 and itself as divisors, and it also has 2 as a divisor. Because the number is greater than two, that divisor is different from both 1 and the number itself.\n\nIt therefore has more than two positive divisors and cannot be prime. The only even integer left as a possible prime is 2, whose positive divisors are exactly 1 and 2.\n\nThis proves that being odd is necessary for a prime greater than two. It does not prove that being odd is sufficient. The integer 21 passes the odd test but factors as `3 × 7`.\n\n## Why one is not prime\n\nThe positive divisors of 1 form the one-element set `{1}`. The definition requires exactly two distinct positive divisors, so 1 is not prime. It is not composite either under the usual definition, which applies to positive integers greater than one.\n\nZero and negative integers are also outside that elementary prime/composite classification. They still have ordinary parity: zero is even, and −11 is odd. There is no conflict because the two classifications have different starting conditions.\n\n## Parity is a useful first filter\n\nTo investigate whether 143 is prime, first notice that it is odd, so it is not divisible by two. That removes one possible divisor but leaves others. In fact, `143 = 11 × 13`, so it is composite.\n\nFor a positive candidate greater than two, an even result settles the question immediately: composite. An odd result means further work is needed. A primality algorithm may test other divisors or use a more advanced method.\n\nThe [calculator](/) answers the parity question only. If it calls an integer odd, it has not certified the integer prime. Review [odd-number rules](/learn/odd-and-even-number-rules/) to see why multiplying odd factors produces so many odd composite numbers.",
+    "related": [
+      "what-is-an-odd-integer",
+      "odd-and-even-number-rules",
+      "common-odd-number-mistakes"
+    ],
+    "sources": [
+      {
+        "title": "OpenStax: Introduction to Whole Numbers",
+        "url": "https://openstax.org/books/elementary-algebra/pages/1-1-introduction-to-whole-numbers"
+      }
+    ]
+  },
+  {
+    "slug": "common-odd-number-mistakes",
+    "category": "learn",
+    "title": "Common odd-number mistakes and how to avoid them",
+    "description": "Avoid the usual parity traps: zero, negative remainders, decimals, rounded integers, prime numbers, and confusing a number’s value with its spelling.",
+    "summary": "Most parity mistakes come from skipping the integer check or inspecting a changed representation. Start with an exact integer, then test divisibility by two.",
+    "body": "## Excluding zero or negative integers\n\nZero is even because `0 = 2 × 0`. Negative integers also have parity: −15 is odd and −16 is even. The definitions use all integers, so neither positivity nor a physical pile of objects is required.\n\nA reliable mathematical checkpoint is `n = 2k + 1` for some integer `k`. For −15, `k = −8` works. For zero, no integer value of `k` works.\n\n## Calling every non-even value odd\n\nThe odd/even split covers integers. It does not divide every possible value into two groups. The number 4.5 is neither odd nor even; a missing input is not an odd number either.\n\nThe notation `5.0` represents the integer 5, so its value is odd. Distinguish that mathematical fact from the calculator’s input format: enter `5`, without a decimal point. See [decimal values and parity](/learn/are-decimals-odd-or-even/) for more examples.\n\n## Checking the wrong digit\n\nFor a decimal integer, use its final digit, not its first digit or digit sum. The integer 24 starts with an even digit and has even parity, but that coincidence does not establish a rule: 25 starts with the same digit and is odd.\n\nThe digit sum can mislead too. The odd integer 35 has the even digit sum 8. Adding digits answers certain other divisibility questions, not this one.\n\n## Assuming a remainder must equal one\n\nJavaScript returns −1 for the remainder of a negative odd integer divided by two. Thus `n % 2 === 1` handles positive odd values but misses their negative counterparts. [MDN documents the sign convention](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Remainder).\n\nFor a validated integer, check `n % 2 !== 0` instead. For BigInt, use `n % 2n !== 0n`. A nonzero remainder alone does not validate the input: fractions can also produce one.\n\n## Trusting digits after they were rounded\n\nConverting a huge decimal integer into an imprecise numeric representation can change its final digit. Inspecting the rounded result does not establish the original value’s parity. Preserve the original digits as text or use an exact integer type; see [large-integer parity](/learn/large-integer-parity/).\n\n## Treating odd as a synonym for prime\n\nThe integers 9, 15, and 27 are odd and composite. Two is prime and even. Parity concerns divisibility by two; primality concerns all positive divisors. They are different jobs with a small shared vocabulary.\n\nBefore using the [calculator](/), check three things: the value is an integer, the digits are exact, and the input uses decimal integer notation. After that, the final digit does the remaining work. There is no need to round, guess, or convene a committee.",
+    "related": [
+      "are-decimals-odd-or-even",
+      "modulo-vs-remainder",
+      "large-integer-parity",
+      "odd-numbers-and-prime-numbers"
+    ],
+    "sources": [
+      {
+        "title": "MDN: Remainder (%)",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Remainder"
+      },
+      {
+        "title": "MDN: Number.MAX_SAFE_INTEGER",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/MAX_SAFE_INTEGER"
+      },
+      {
+        "title": "OpenStax: Introduction to Whole Numbers",
+        "url": "https://openstax.org/books/elementary-algebra/pages/1-1-introduction-to-whole-numbers"
+      }
+    ]
+  }
+]
