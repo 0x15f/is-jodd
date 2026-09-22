@@ -1,0 +1,687 @@
+{
+  "experiment": "Native fetch versus native HTTPS with keep-alive",
+  "startedAt": "2026-09-22T01:47:56.491Z",
+  "finishedAt": "2026-09-22T01:47:59.490Z",
+  "environment": {
+    "node": "v24.7.0",
+    "platform": "darwin",
+    "arch": "arm64",
+    "release": "24.6.0"
+  },
+  "endpoint": "https://api.typesafe.ai/v1/systemone",
+  "model": "jev-1.13.0",
+  "options": {
+    "pairs": 6,
+    "warmup": 2,
+    "timeout": 10000
+  },
+  "methodology": "Sequential paired calls; identical body per pair; alternating order, exactly balanced for even pair counts; both response bodies fully read; no retries; warmup excluded from summary.",
+  "limitation": "Exploratory small sample includes network, connection, and provider variance. It does not establish a package speedup or isolate Boolean negation cost.",
+  "stoppedReason": null,
+  "summary": {
+    "fetch": {
+      "attempted": 6,
+      "successful": 6,
+      "errors": 0,
+      "correctAnswers": 6,
+      "meanMs": 176.2005556666666,
+      "medianMs": 157.03943749999996,
+      "minMs": 126.19641699999988,
+      "maxMs": 287.55925
+    },
+    "https-keepalive": {
+      "attempted": 6,
+      "successful": 6,
+      "errors": 0,
+      "correctAnswers": 6,
+      "meanMs": 141.30311816666662,
+      "medianMs": 139.52618749999988,
+      "minMs": 118.1775419999999,
+      "maxMs": 163.44883299999992
+    }
+  },
+  "completedPairs": [
+    {
+      "pair": 0,
+      "fetchMinusHttpsMs": 145.26937500000008
+    },
+    {
+      "pair": 1,
+      "fetchMinusHttpsMs": -20.44362500000011
+    },
+    {
+      "pair": 2,
+      "fetchMinusHttpsMs": 8.01887499999998
+    },
+    {
+      "pair": 3,
+      "fetchMinusHttpsMs": -28.880833000000166
+    },
+    {
+      "pair": 4,
+      "fetchMinusHttpsMs": 47.38254099999995
+    },
+    {
+      "pair": 5,
+      "fetchMinusHttpsMs": 58.03829200000018
+    }
+  ],
+  "samples": [
+    {
+      "phase": "warmup",
+      "pair": 0,
+      "position": 0,
+      "transport": "fetch",
+      "number": 41,
+      "requestBody": {
+        "model": "jev-1.13.0",
+        "state": "41",
+        "questions": {
+          "is_odd": {
+            "type": "noul",
+            "instructions": "Is this number odd?"
+          }
+        }
+      },
+      "expectedOdd": true,
+      "ok": true,
+      "durationMs": 463.99112499999995,
+      "status": 200,
+      "rawBody": "{\"model\":\"jev-1.13.0\",\"answers\":{\"is_odd\":{\"type\":\"noul\",\"noul\":0.99}},\"usage\":{\"input_tokens\":273,\"output_tokens\":22}}",
+      "response": {
+        "model": "jev-1.13.0",
+        "answers": {
+          "is_odd": {
+            "type": "noul",
+            "noul": 0.99
+          }
+        },
+        "usage": {
+          "input_tokens": 273,
+          "output_tokens": 22
+        }
+      },
+      "probability": 0.99,
+      "actualOdd": true,
+      "correct": true
+    },
+    {
+      "phase": "warmup",
+      "pair": 0,
+      "position": 1,
+      "transport": "https-keepalive",
+      "number": 41,
+      "requestBody": {
+        "model": "jev-1.13.0",
+        "state": "41",
+        "questions": {
+          "is_odd": {
+            "type": "noul",
+            "instructions": "Is this number odd?"
+          }
+        }
+      },
+      "expectedOdd": true,
+      "ok": true,
+      "durationMs": 329.10625000000005,
+      "status": 200,
+      "reusedSocket": false,
+      "rawBody": "{\"model\":\"jev-1.13.0\",\"answers\":{\"is_odd\":{\"type\":\"noul\",\"noul\":0.99}},\"usage\":{\"input_tokens\":273,\"output_tokens\":22}}",
+      "response": {
+        "model": "jev-1.13.0",
+        "answers": {
+          "is_odd": {
+            "type": "noul",
+            "noul": 0.99
+          }
+        },
+        "usage": {
+          "input_tokens": 273,
+          "output_tokens": 22
+        }
+      },
+      "probability": 0.99,
+      "actualOdd": true,
+      "correct": true
+    },
+    {
+      "phase": "warmup",
+      "pair": 1,
+      "position": 0,
+      "transport": "https-keepalive",
+      "number": 42,
+      "requestBody": {
+        "model": "jev-1.13.0",
+        "state": "42",
+        "questions": {
+          "is_odd": {
+            "type": "noul",
+            "instructions": "Is this number odd?"
+          }
+        }
+      },
+      "expectedOdd": false,
+      "ok": true,
+      "durationMs": 133.13904100000002,
+      "status": 200,
+      "reusedSocket": true,
+      "rawBody": "{\"model\":\"jev-1.13.0\",\"answers\":{\"is_odd\":{\"type\":\"noul\",\"noul\":0.01}},\"usage\":{\"input_tokens\":273,\"output_tokens\":22}}",
+      "response": {
+        "model": "jev-1.13.0",
+        "answers": {
+          "is_odd": {
+            "type": "noul",
+            "noul": 0.01
+          }
+        },
+        "usage": {
+          "input_tokens": 273,
+          "output_tokens": 22
+        }
+      },
+      "probability": 0.01,
+      "actualOdd": false,
+      "correct": true
+    },
+    {
+      "phase": "warmup",
+      "pair": 1,
+      "position": 1,
+      "transport": "fetch",
+      "number": 42,
+      "requestBody": {
+        "model": "jev-1.13.0",
+        "state": "42",
+        "questions": {
+          "is_odd": {
+            "type": "noul",
+            "instructions": "Is this number odd?"
+          }
+        }
+      },
+      "expectedOdd": false,
+      "ok": true,
+      "durationMs": 155.41429199999993,
+      "status": 200,
+      "rawBody": "{\"model\":\"jev-1.13.0\",\"answers\":{\"is_odd\":{\"type\":\"noul\",\"noul\":0.01}},\"usage\":{\"input_tokens\":273,\"output_tokens\":22}}",
+      "response": {
+        "model": "jev-1.13.0",
+        "answers": {
+          "is_odd": {
+            "type": "noul",
+            "noul": 0.01
+          }
+        },
+        "usage": {
+          "input_tokens": 273,
+          "output_tokens": 22
+        }
+      },
+      "probability": 0.01,
+      "actualOdd": false,
+      "correct": true
+    },
+    {
+      "phase": "measured",
+      "pair": 0,
+      "position": 0,
+      "transport": "fetch",
+      "number": 41,
+      "requestBody": {
+        "model": "jev-1.13.0",
+        "state": "41",
+        "questions": {
+          "is_odd": {
+            "type": "noul",
+            "instructions": "Is this number odd?"
+          }
+        }
+      },
+      "expectedOdd": true,
+      "ok": true,
+      "durationMs": 287.55925,
+      "status": 200,
+      "rawBody": "{\"model\":\"jev-1.13.0\",\"answers\":{\"is_odd\":{\"type\":\"noul\",\"noul\":0.99}},\"usage\":{\"input_tokens\":273,\"output_tokens\":22}}",
+      "response": {
+        "model": "jev-1.13.0",
+        "answers": {
+          "is_odd": {
+            "type": "noul",
+            "noul": 0.99
+          }
+        },
+        "usage": {
+          "input_tokens": 273,
+          "output_tokens": 22
+        }
+      },
+      "probability": 0.99,
+      "actualOdd": true,
+      "correct": true
+    },
+    {
+      "phase": "measured",
+      "pair": 0,
+      "position": 1,
+      "transport": "https-keepalive",
+      "number": 41,
+      "requestBody": {
+        "model": "jev-1.13.0",
+        "state": "41",
+        "questions": {
+          "is_odd": {
+            "type": "noul",
+            "instructions": "Is this number odd?"
+          }
+        }
+      },
+      "expectedOdd": true,
+      "ok": true,
+      "durationMs": 142.28987499999994,
+      "status": 200,
+      "reusedSocket": true,
+      "rawBody": "{\"model\":\"jev-1.13.0\",\"answers\":{\"is_odd\":{\"type\":\"noul\",\"noul\":0.99}},\"usage\":{\"input_tokens\":273,\"output_tokens\":22}}",
+      "response": {
+        "model": "jev-1.13.0",
+        "answers": {
+          "is_odd": {
+            "type": "noul",
+            "noul": 0.99
+          }
+        },
+        "usage": {
+          "input_tokens": 273,
+          "output_tokens": 22
+        }
+      },
+      "probability": 0.99,
+      "actualOdd": true,
+      "correct": true
+    },
+    {
+      "phase": "measured",
+      "pair": 1,
+      "position": 0,
+      "transport": "https-keepalive",
+      "number": 42,
+      "requestBody": {
+        "model": "jev-1.13.0",
+        "state": "42",
+        "questions": {
+          "is_odd": {
+            "type": "noul",
+            "instructions": "Is this number odd?"
+          }
+        }
+      },
+      "expectedOdd": false,
+      "ok": true,
+      "durationMs": 158.8487500000001,
+      "status": 200,
+      "reusedSocket": true,
+      "rawBody": "{\"model\":\"jev-1.13.0\",\"answers\":{\"is_odd\":{\"type\":\"noul\",\"noul\":0.01}},\"usage\":{\"input_tokens\":273,\"output_tokens\":22}}",
+      "response": {
+        "model": "jev-1.13.0",
+        "answers": {
+          "is_odd": {
+            "type": "noul",
+            "noul": 0.01
+          }
+        },
+        "usage": {
+          "input_tokens": 273,
+          "output_tokens": 22
+        }
+      },
+      "probability": 0.01,
+      "actualOdd": false,
+      "correct": true
+    },
+    {
+      "phase": "measured",
+      "pair": 1,
+      "position": 1,
+      "transport": "fetch",
+      "number": 42,
+      "requestBody": {
+        "model": "jev-1.13.0",
+        "state": "42",
+        "questions": {
+          "is_odd": {
+            "type": "noul",
+            "instructions": "Is this number odd?"
+          }
+        }
+      },
+      "expectedOdd": false,
+      "ok": true,
+      "durationMs": 138.405125,
+      "status": 200,
+      "rawBody": "{\"model\":\"jev-1.13.0\",\"answers\":{\"is_odd\":{\"type\":\"noul\",\"noul\":0.01}},\"usage\":{\"input_tokens\":273,\"output_tokens\":22}}",
+      "response": {
+        "model": "jev-1.13.0",
+        "answers": {
+          "is_odd": {
+            "type": "noul",
+            "noul": 0.01
+          }
+        },
+        "usage": {
+          "input_tokens": 273,
+          "output_tokens": 22
+        }
+      },
+      "probability": 0.01,
+      "actualOdd": false,
+      "correct": true
+    },
+    {
+      "phase": "measured",
+      "pair": 2,
+      "position": 0,
+      "transport": "fetch",
+      "number": 99,
+      "requestBody": {
+        "model": "jev-1.13.0",
+        "state": "99",
+        "questions": {
+          "is_odd": {
+            "type": "noul",
+            "instructions": "Is this number odd?"
+          }
+        }
+      },
+      "expectedOdd": true,
+      "ok": true,
+      "durationMs": 126.19641699999988,
+      "status": 200,
+      "rawBody": "{\"model\":\"jev-1.13.0\",\"answers\":{\"is_odd\":{\"type\":\"noul\",\"noul\":0.97}},\"usage\":{\"input_tokens\":273,\"output_tokens\":22}}",
+      "response": {
+        "model": "jev-1.13.0",
+        "answers": {
+          "is_odd": {
+            "type": "noul",
+            "noul": 0.97
+          }
+        },
+        "usage": {
+          "input_tokens": 273,
+          "output_tokens": 22
+        }
+      },
+      "probability": 0.97,
+      "actualOdd": true,
+      "correct": true
+    },
+    {
+      "phase": "measured",
+      "pair": 2,
+      "position": 1,
+      "transport": "https-keepalive",
+      "number": 99,
+      "requestBody": {
+        "model": "jev-1.13.0",
+        "state": "99",
+        "questions": {
+          "is_odd": {
+            "type": "noul",
+            "instructions": "Is this number odd?"
+          }
+        }
+      },
+      "expectedOdd": true,
+      "ok": true,
+      "durationMs": 118.1775419999999,
+      "status": 200,
+      "reusedSocket": true,
+      "rawBody": "{\"model\":\"jev-1.13.0\",\"answers\":{\"is_odd\":{\"type\":\"noul\",\"noul\":0.98}},\"usage\":{\"input_tokens\":273,\"output_tokens\":22}}",
+      "response": {
+        "model": "jev-1.13.0",
+        "answers": {
+          "is_odd": {
+            "type": "noul",
+            "noul": 0.98
+          }
+        },
+        "usage": {
+          "input_tokens": 273,
+          "output_tokens": 22
+        }
+      },
+      "probability": 0.98,
+      "actualOdd": true,
+      "correct": true
+    },
+    {
+      "phase": "measured",
+      "pair": 3,
+      "position": 0,
+      "transport": "https-keepalive",
+      "number": 100,
+      "requestBody": {
+        "model": "jev-1.13.0",
+        "state": "100",
+        "questions": {
+          "is_odd": {
+            "type": "noul",
+            "instructions": "Is this number odd?"
+          }
+        }
+      },
+      "expectedOdd": false,
+      "ok": true,
+      "durationMs": 163.44883299999992,
+      "status": 200,
+      "reusedSocket": true,
+      "rawBody": "{\"model\":\"jev-1.13.0\",\"answers\":{\"is_odd\":{\"type\":\"noul\",\"noul\":0.01}},\"usage\":{\"input_tokens\":274,\"output_tokens\":22}}",
+      "response": {
+        "model": "jev-1.13.0",
+        "answers": {
+          "is_odd": {
+            "type": "noul",
+            "noul": 0.01
+          }
+        },
+        "usage": {
+          "input_tokens": 274,
+          "output_tokens": 22
+        }
+      },
+      "probability": 0.01,
+      "actualOdd": false,
+      "correct": true
+    },
+    {
+      "phase": "measured",
+      "pair": 3,
+      "position": 1,
+      "transport": "fetch",
+      "number": 100,
+      "requestBody": {
+        "model": "jev-1.13.0",
+        "state": "100",
+        "questions": {
+          "is_odd": {
+            "type": "noul",
+            "instructions": "Is this number odd?"
+          }
+        }
+      },
+      "expectedOdd": false,
+      "ok": true,
+      "durationMs": 134.56799999999976,
+      "status": 200,
+      "rawBody": "{\"model\":\"jev-1.13.0\",\"answers\":{\"is_odd\":{\"type\":\"noul\",\"noul\":0.01}},\"usage\":{\"input_tokens\":274,\"output_tokens\":22}}",
+      "response": {
+        "model": "jev-1.13.0",
+        "answers": {
+          "is_odd": {
+            "type": "noul",
+            "noul": 0.01
+          }
+        },
+        "usage": {
+          "input_tokens": 274,
+          "output_tokens": 22
+        }
+      },
+      "probability": 0.01,
+      "actualOdd": false,
+      "correct": true
+    },
+    {
+      "phase": "measured",
+      "pair": 4,
+      "position": 0,
+      "transport": "fetch",
+      "number": 1001,
+      "requestBody": {
+        "model": "jev-1.13.0",
+        "state": "1001",
+        "questions": {
+          "is_odd": {
+            "type": "noul",
+            "instructions": "Is this number odd?"
+          }
+        }
+      },
+      "expectedOdd": true,
+      "ok": true,
+      "durationMs": 175.67374999999993,
+      "status": 200,
+      "rawBody": "{\"model\":\"jev-1.13.0\",\"answers\":{\"is_odd\":{\"type\":\"noul\",\"noul\":0.99}},\"usage\":{\"input_tokens\":275,\"output_tokens\":22}}",
+      "response": {
+        "model": "jev-1.13.0",
+        "answers": {
+          "is_odd": {
+            "type": "noul",
+            "noul": 0.99
+          }
+        },
+        "usage": {
+          "input_tokens": 275,
+          "output_tokens": 22
+        }
+      },
+      "probability": 0.99,
+      "actualOdd": true,
+      "correct": true
+    },
+    {
+      "phase": "measured",
+      "pair": 4,
+      "position": 1,
+      "transport": "https-keepalive",
+      "number": 1001,
+      "requestBody": {
+        "model": "jev-1.13.0",
+        "state": "1001",
+        "questions": {
+          "is_odd": {
+            "type": "noul",
+            "instructions": "Is this number odd?"
+          }
+        }
+      },
+      "expectedOdd": true,
+      "ok": true,
+      "durationMs": 128.29120899999998,
+      "status": 200,
+      "reusedSocket": true,
+      "rawBody": "{\"model\":\"jev-1.13.0\",\"answers\":{\"is_odd\":{\"type\":\"noul\",\"noul\":0.99}},\"usage\":{\"input_tokens\":275,\"output_tokens\":22}}",
+      "response": {
+        "model": "jev-1.13.0",
+        "answers": {
+          "is_odd": {
+            "type": "noul",
+            "noul": 0.99
+          }
+        },
+        "usage": {
+          "input_tokens": 275,
+          "output_tokens": 22
+        }
+      },
+      "probability": 0.99,
+      "actualOdd": true,
+      "correct": true
+    },
+    {
+      "phase": "measured",
+      "pair": 5,
+      "position": 0,
+      "transport": "https-keepalive",
+      "number": 1002,
+      "requestBody": {
+        "model": "jev-1.13.0",
+        "state": "1002",
+        "questions": {
+          "is_odd": {
+            "type": "noul",
+            "instructions": "Is this number odd?"
+          }
+        }
+      },
+      "expectedOdd": false,
+      "ok": true,
+      "durationMs": 136.76249999999982,
+      "status": 200,
+      "reusedSocket": true,
+      "rawBody": "{\"model\":\"jev-1.13.0\",\"answers\":{\"is_odd\":{\"type\":\"noul\",\"noul\":0.02}},\"usage\":{\"input_tokens\":275,\"output_tokens\":22}}",
+      "response": {
+        "model": "jev-1.13.0",
+        "answers": {
+          "is_odd": {
+            "type": "noul",
+            "noul": 0.02
+          }
+        },
+        "usage": {
+          "input_tokens": 275,
+          "output_tokens": 22
+        }
+      },
+      "probability": 0.02,
+      "actualOdd": false,
+      "correct": true
+    },
+    {
+      "phase": "measured",
+      "pair": 5,
+      "position": 1,
+      "transport": "fetch",
+      "number": 1002,
+      "requestBody": {
+        "model": "jev-1.13.0",
+        "state": "1002",
+        "questions": {
+          "is_odd": {
+            "type": "noul",
+            "instructions": "Is this number odd?"
+          }
+        }
+      },
+      "expectedOdd": false,
+      "ok": true,
+      "durationMs": 194.800792,
+      "status": 200,
+      "rawBody": "{\"model\":\"jev-1.13.0\",\"answers\":{\"is_odd\":{\"type\":\"noul\",\"noul\":0.02}},\"usage\":{\"input_tokens\":275,\"output_tokens\":22}}",
+      "response": {
+        "model": "jev-1.13.0",
+        "answers": {
+          "is_odd": {
+            "type": "noul",
+            "noul": 0.02
+          }
+        },
+        "usage": {
+          "input_tokens": 275,
+          "output_tokens": 22
+        }
+      },
+      "probability": 0.02,
+      "actualOdd": false,
+      "correct": true
+    }
+  ]
+}

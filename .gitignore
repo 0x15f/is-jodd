@@ -1,0 +1,10 @@
+node_modules/
+dist/
+.env
+.env.*
+!.env.example
+.npmrc
+*.tgz
+coverage/
+benchmark/results/*.json
+benchmark/results/*.md

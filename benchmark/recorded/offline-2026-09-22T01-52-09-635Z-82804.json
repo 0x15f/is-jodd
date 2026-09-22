@@ -1,0 +1,664 @@
+{
+  "kind": "offline-synthetic",
+  "startedAt": "2026-09-22T01:52:09.635Z",
+  "finishedAt": "2026-09-22T01:52:09.833Z",
+  "environment": {
+    "node": "v24.7.0",
+    "platform": "darwin",
+    "arch": "arm64",
+    "direct": {
+      "name": "is-jodd",
+      "version": "1.0.0",
+      "sourceSha256": "137de03563175b820c7bf3d55e6402d5218eb26521a1650ce7ef9d32d3eb311b",
+      "runtimeEntryBytes": 861,
+      "runtimeEntryGzipBytes": 562,
+      "developmentSourceBytes": 1261,
+      "developmentSourceGzipBytes": 713
+    },
+    "baseline": {
+      "name": "is-jeven",
+      "version": "1.0.0",
+      "sourceSha256": "92160f2c46c8a8f3efffff7925d0bdac23e4ab31b02baab2ec5ffcc91743f8e5",
+      "runtimeEntryBytes": 1437,
+      "runtimeEntryGzipBytes": 748
+    }
+  },
+  "options": {
+    "rounds": 12,
+    "iterations": 1000,
+    "warmup-iterations": 250
+  },
+  "methodology": "Actual package calls use mocked fetch returning fresh standard Response objects containing deterministic schema-matched answers. Full calls include validation, request serialization, promise/negation overhead, Response allocation, and JSON parsing. Timed batches repeatedly use input 17 and alternate first method. This is a synthetic local microbenchmark, not network/API performance. Request sizes are exact UTF-8 JSON body bytes, excluding headers/TLS. Gzip uses level 9 and measures the runtime entry alone, not npm tarballs.",
+  "entryBytesSaved": 576,
+  "entryGzipBytesSaved": 186,
+  "methods": {
+    "direct": {
+      "batchLatency": {
+        "count": 12,
+        "meanMs": 6.483593916666668,
+        "medianMs": 5.822041999999996,
+        "p95Ms": 9.123671199999993
+      },
+      "perCallLatency": {
+        "count": 12,
+        "meanMs": 0.006483593916666668,
+        "medianMs": 0.005822041999999996,
+        "p95Ms": 0.009123671199999994
+      }
+    },
+    "baseline": {
+      "batchLatency": {
+        "count": 12,
+        "meanMs": 6.6073229166666705,
+        "medianMs": 6.603312500000001,
+        "p95Ms": 8.223928799999998
+      },
+      "perCallLatency": {
+        "count": 12,
+        "meanMs": 0.006607322916666669,
+        "medianMs": 0.0066033125000000015,
+        "p95Ms": 0.008223928799999997
+      }
+    }
+  },
+  "paired": {
+    "count": 12,
+    "directWins": 9,
+    "ties": 0,
+    "meanSavingsMs": 0.12372900000000264,
+    "bootstrap95Ms": [
+      -0.3248287541666653,
+      0.5101139604166726
+    ],
+    "bootstrapResamples": 10000,
+    "bootstrapSeed": "0x1a2b3c4d"
+  },
+  "requests": [
+    {
+      "input": "0",
+      "direct": {
+        "endpoint": "https://api.typesafe.ai/v1/systemone",
+        "method": "POST",
+        "requestBody": "{\"model\":\"jev-latest\",\"state\":\"0\",\"questions\":{\"odd\":{\"type\":\"noul\",\"instructions\":\"Is this integer odd?\"}}}",
+        "requestBodyBytes": 108,
+        "mockResponseBodyBytes": 44
+      },
+      "baseline": {
+        "endpoint": "https://api.typesafe.ai/v1/systemone",
+        "method": "POST",
+        "requestBody": "{\"model\":\"jev-latest\",\"state\":{\"num\":0},\"questions\":{\"category\":{\"type\":\"choice\",\"instructions\":\"Is this number even?\",\"criteria\":{\"true\":null,\"false\":null}}}}",
+        "requestBodyBytes": 159,
+        "mockResponseBodyBytes": 58
+      },
+      "requestBodySavedBytes": 51,
+      "requestBodyReductionPercent": 32.075471698113205
+    },
+    {
+      "input": "-0",
+      "direct": {
+        "endpoint": "https://api.typesafe.ai/v1/systemone",
+        "method": "POST",
+        "requestBody": "{\"model\":\"jev-latest\",\"state\":\"0\",\"questions\":{\"odd\":{\"type\":\"noul\",\"instructions\":\"Is this integer odd?\"}}}",
+        "requestBodyBytes": 108,
+        "mockResponseBodyBytes": 44
+      },
+      "baseline": {
+        "endpoint": "https://api.typesafe.ai/v1/systemone",
+        "method": "POST",
+        "requestBody": "{\"model\":\"jev-latest\",\"state\":{\"num\":0},\"questions\":{\"category\":{\"type\":\"choice\",\"instructions\":\"Is this number even?\",\"criteria\":{\"true\":null,\"false\":null}}}}",
+        "requestBodyBytes": 159,
+        "mockResponseBodyBytes": 58
+      },
+      "requestBodySavedBytes": 51,
+      "requestBodyReductionPercent": 32.075471698113205
+    },
+    {
+      "input": "1",
+      "direct": {
+        "endpoint": "https://api.typesafe.ai/v1/systemone",
+        "method": "POST",
+        "requestBody": "{\"model\":\"jev-latest\",\"state\":\"1\",\"questions\":{\"odd\":{\"type\":\"noul\",\"instructions\":\"Is this integer odd?\"}}}",
+        "requestBodyBytes": 108,
+        "mockResponseBodyBytes": 44
+      },
+      "baseline": {
+        "endpoint": "https://api.typesafe.ai/v1/systemone",
+        "method": "POST",
+        "requestBody": "{\"model\":\"jev-latest\",\"state\":{\"num\":1},\"questions\":{\"category\":{\"type\":\"choice\",\"instructions\":\"Is this number even?\",\"criteria\":{\"true\":null,\"false\":null}}}}",
+        "requestBodyBytes": 159,
+        "mockResponseBodyBytes": 59
+      },
+      "requestBodySavedBytes": 51,
+      "requestBodyReductionPercent": 32.075471698113205
+    },
+    {
+      "input": "-1",
+      "direct": {
+        "endpoint": "https://api.typesafe.ai/v1/systemone",
+        "method": "POST",
+        "requestBody": "{\"model\":\"jev-latest\",\"state\":\"-1\",\"questions\":{\"odd\":{\"type\":\"noul\",\"instructions\":\"Is this integer odd?\"}}}",
+        "requestBodyBytes": 109,
+        "mockResponseBodyBytes": 44
+      },
+      "baseline": {
+        "endpoint": "https://api.typesafe.ai/v1/systemone",
+        "method": "POST",
+        "requestBody": "{\"model\":\"jev-latest\",\"state\":{\"num\":-1},\"questions\":{\"category\":{\"type\":\"choice\",\"instructions\":\"Is this number even?\",\"criteria\":{\"true\":null,\"false\":null}}}}",
+        "requestBodyBytes": 160,
+        "mockResponseBodyBytes": 59
+      },
+      "requestBodySavedBytes": 51,
+      "requestBodyReductionPercent": 31.875
+    },
+    {
+      "input": "2",
+      "direct": {
+        "endpoint": "https://api.typesafe.ai/v1/systemone",
+        "method": "POST",
+        "requestBody": "{\"model\":\"jev-latest\",\"state\":\"2\",\"questions\":{\"odd\":{\"type\":\"noul\",\"instructions\":\"Is this integer odd?\"}}}",
+        "requestBodyBytes": 108,
+        "mockResponseBodyBytes": 44
+      },
+      "baseline": {
+        "endpoint": "https://api.typesafe.ai/v1/systemone",
+        "method": "POST",
+        "requestBody": "{\"model\":\"jev-latest\",\"state\":{\"num\":2},\"questions\":{\"category\":{\"type\":\"choice\",\"instructions\":\"Is this number even?\",\"criteria\":{\"true\":null,\"false\":null}}}}",
+        "requestBodyBytes": 159,
+        "mockResponseBodyBytes": 58
+      },
+      "requestBodySavedBytes": 51,
+      "requestBodyReductionPercent": 32.075471698113205
+    },
+    {
+      "input": "-2",
+      "direct": {
+        "endpoint": "https://api.typesafe.ai/v1/systemone",
+        "method": "POST",
+        "requestBody": "{\"model\":\"jev-latest\",\"state\":\"-2\",\"questions\":{\"odd\":{\"type\":\"noul\",\"instructions\":\"Is this integer odd?\"}}}",
+        "requestBodyBytes": 109,
+        "mockResponseBodyBytes": 44
+      },
+      "baseline": {
+        "endpoint": "https://api.typesafe.ai/v1/systemone",
+        "method": "POST",
+        "requestBody": "{\"model\":\"jev-latest\",\"state\":{\"num\":-2},\"questions\":{\"category\":{\"type\":\"choice\",\"instructions\":\"Is this number even?\",\"criteria\":{\"true\":null,\"false\":null}}}}",
+        "requestBodyBytes": 160,
+        "mockResponseBodyBytes": 58
+      },
+      "requestBodySavedBytes": 51,
+      "requestBodyReductionPercent": 31.875
+    },
+    {
+      "input": "3",
+      "direct": {
+        "endpoint": "https://api.typesafe.ai/v1/systemone",
+        "method": "POST",
+        "requestBody": "{\"model\":\"jev-latest\",\"state\":\"3\",\"questions\":{\"odd\":{\"type\":\"noul\",\"instructions\":\"Is this integer odd?\"}}}",
+        "requestBodyBytes": 108,
+        "mockResponseBodyBytes": 44
+      },
+      "baseline": {
+        "endpoint": "https://api.typesafe.ai/v1/systemone",
+        "method": "POST",
+        "requestBody": "{\"model\":\"jev-latest\",\"state\":{\"num\":3},\"questions\":{\"category\":{\"type\":\"choice\",\"instructions\":\"Is this number even?\",\"criteria\":{\"true\":null,\"false\":null}}}}",
+        "requestBodyBytes": 159,
+        "mockResponseBodyBytes": 59
+      },
+      "requestBodySavedBytes": 51,
+      "requestBodyReductionPercent": 32.075471698113205
+    },
+    {
+      "input": "-3",
+      "direct": {
+        "endpoint": "https://api.typesafe.ai/v1/systemone",
+        "method": "POST",
+        "requestBody": "{\"model\":\"jev-latest\",\"state\":\"-3\",\"questions\":{\"odd\":{\"type\":\"noul\",\"instructions\":\"Is this integer odd?\"}}}",
+        "requestBodyBytes": 109,
+        "mockResponseBodyBytes": 44
+      },
+      "baseline": {
+        "endpoint": "https://api.typesafe.ai/v1/systemone",
+        "method": "POST",
+        "requestBody": "{\"model\":\"jev-latest\",\"state\":{\"num\":-3},\"questions\":{\"category\":{\"type\":\"choice\",\"instructions\":\"Is this number even?\",\"criteria\":{\"true\":null,\"false\":null}}}}",
+        "requestBodyBytes": 160,
+        "mockResponseBodyBytes": 59
+      },
+      "requestBodySavedBytes": 51,
+      "requestBodyReductionPercent": 31.875
+    },
+    {
+      "input": "17",
+      "direct": {
+        "endpoint": "https://api.typesafe.ai/v1/systemone",
+        "method": "POST",
+        "requestBody": "{\"model\":\"jev-latest\",\"state\":\"17\",\"questions\":{\"odd\":{\"type\":\"noul\",\"instructions\":\"Is this integer odd?\"}}}",
+        "requestBodyBytes": 109,
+        "mockResponseBodyBytes": 44
+      },
+      "baseline": {
+        "endpoint": "https://api.typesafe.ai/v1/systemone",
+        "method": "POST",
+        "requestBody": "{\"model\":\"jev-latest\",\"state\":{\"num\":17},\"questions\":{\"category\":{\"type\":\"choice\",\"instructions\":\"Is this number even?\",\"criteria\":{\"true\":null,\"false\":null}}}}",
+        "requestBodyBytes": 160,
+        "mockResponseBodyBytes": 59
+      },
+      "requestBodySavedBytes": 51,
+      "requestBodyReductionPercent": 31.875
+    },
+    {
+      "input": "-17",
+      "direct": {
+        "endpoint": "https://api.typesafe.ai/v1/systemone",
+        "method": "POST",
+        "requestBody": "{\"model\":\"jev-latest\",\"state\":\"-17\",\"questions\":{\"odd\":{\"type\":\"noul\",\"instructions\":\"Is this integer odd?\"}}}",
+        "requestBodyBytes": 110,
+        "mockResponseBodyBytes": 44
+      },
+      "baseline": {
+        "endpoint": "https://api.typesafe.ai/v1/systemone",
+        "method": "POST",
+        "requestBody": "{\"model\":\"jev-latest\",\"state\":{\"num\":-17},\"questions\":{\"category\":{\"type\":\"choice\",\"instructions\":\"Is this number even?\",\"criteria\":{\"true\":null,\"false\":null}}}}",
+        "requestBodyBytes": 161,
+        "mockResponseBodyBytes": 59
+      },
+      "requestBodySavedBytes": 51,
+      "requestBodyReductionPercent": 31.677018633540374
+    },
+    {
+      "input": "100",
+      "direct": {
+        "endpoint": "https://api.typesafe.ai/v1/systemone",
+        "method": "POST",
+        "requestBody": "{\"model\":\"jev-latest\",\"state\":\"100\",\"questions\":{\"odd\":{\"type\":\"noul\",\"instructions\":\"Is this integer odd?\"}}}",
+        "requestBodyBytes": 110,
+        "mockResponseBodyBytes": 44
+      },
+      "baseline": {
+        "endpoint": "https://api.typesafe.ai/v1/systemone",
+        "method": "POST",
+        "requestBody": "{\"model\":\"jev-latest\",\"state\":{\"num\":100},\"questions\":{\"category\":{\"type\":\"choice\",\"instructions\":\"Is this number even?\",\"criteria\":{\"true\":null,\"false\":null}}}}",
+        "requestBodyBytes": 161,
+        "mockResponseBodyBytes": 58
+      },
+      "requestBodySavedBytes": 51,
+      "requestBodyReductionPercent": 31.677018633540374
+    },
+    {
+      "input": "101",
+      "direct": {
+        "endpoint": "https://api.typesafe.ai/v1/systemone",
+        "method": "POST",
+        "requestBody": "{\"model\":\"jev-latest\",\"state\":\"101\",\"questions\":{\"odd\":{\"type\":\"noul\",\"instructions\":\"Is this integer odd?\"}}}",
+        "requestBodyBytes": 110,
+        "mockResponseBodyBytes": 44
+      },
+      "baseline": {
+        "endpoint": "https://api.typesafe.ai/v1/systemone",
+        "method": "POST",
+        "requestBody": "{\"model\":\"jev-latest\",\"state\":{\"num\":101},\"questions\":{\"category\":{\"type\":\"choice\",\"instructions\":\"Is this number even?\",\"criteria\":{\"true\":null,\"false\":null}}}}",
+        "requestBodyBytes": 161,
+        "mockResponseBodyBytes": 59
+      },
+      "requestBodySavedBytes": 51,
+      "requestBodyReductionPercent": 31.677018633540374
+    },
+    {
+      "input": "-100",
+      "direct": {
+        "endpoint": "https://api.typesafe.ai/v1/systemone",
+        "method": "POST",
+        "requestBody": "{\"model\":\"jev-latest\",\"state\":\"-100\",\"questions\":{\"odd\":{\"type\":\"noul\",\"instructions\":\"Is this integer odd?\"}}}",
+        "requestBodyBytes": 111,
+        "mockResponseBodyBytes": 44
+      },
+      "baseline": {
+        "endpoint": "https://api.typesafe.ai/v1/systemone",
+        "method": "POST",
+        "requestBody": "{\"model\":\"jev-latest\",\"state\":{\"num\":-100},\"questions\":{\"category\":{\"type\":\"choice\",\"instructions\":\"Is this number even?\",\"criteria\":{\"true\":null,\"false\":null}}}}",
+        "requestBodyBytes": 162,
+        "mockResponseBodyBytes": 58
+      },
+      "requestBodySavedBytes": 51,
+      "requestBodyReductionPercent": 31.48148148148148
+    },
+    {
+      "input": "-101",
+      "direct": {
+        "endpoint": "https://api.typesafe.ai/v1/systemone",
+        "method": "POST",
+        "requestBody": "{\"model\":\"jev-latest\",\"state\":\"-101\",\"questions\":{\"odd\":{\"type\":\"noul\",\"instructions\":\"Is this integer odd?\"}}}",
+        "requestBodyBytes": 111,
+        "mockResponseBodyBytes": 44
+      },
+      "baseline": {
+        "endpoint": "https://api.typesafe.ai/v1/systemone",
+        "method": "POST",
+        "requestBody": "{\"model\":\"jev-latest\",\"state\":{\"num\":-101},\"questions\":{\"category\":{\"type\":\"choice\",\"instructions\":\"Is this number even?\",\"criteria\":{\"true\":null,\"false\":null}}}}",
+        "requestBodyBytes": 162,
+        "mockResponseBodyBytes": 59
+      },
+      "requestBodySavedBytes": 51,
+      "requestBodyReductionPercent": 31.48148148148148
+    },
+    {
+      "input": "9007199254740991",
+      "direct": {
+        "endpoint": "https://api.typesafe.ai/v1/systemone",
+        "method": "POST",
+        "requestBody": "{\"model\":\"jev-latest\",\"state\":\"9007199254740991\",\"questions\":{\"odd\":{\"type\":\"noul\",\"instructions\":\"Is this integer odd?\"}}}",
+        "requestBodyBytes": 123,
+        "mockResponseBodyBytes": 44
+      },
+      "baseline": {
+        "endpoint": "https://api.typesafe.ai/v1/systemone",
+        "method": "POST",
+        "requestBody": "{\"model\":\"jev-latest\",\"state\":{\"num\":9007199254740991},\"questions\":{\"category\":{\"type\":\"choice\",\"instructions\":\"Is this number even?\",\"criteria\":{\"true\":null,\"false\":null}}}}",
+        "requestBodyBytes": 174,
+        "mockResponseBodyBytes": 59
+      },
+      "requestBodySavedBytes": 51,
+      "requestBodyReductionPercent": 29.310344827586206
+    },
+    {
+      "input": "9007199254740990",
+      "direct": {
+        "endpoint": "https://api.typesafe.ai/v1/systemone",
+        "method": "POST",
+        "requestBody": "{\"model\":\"jev-latest\",\"state\":\"9007199254740990\",\"questions\":{\"odd\":{\"type\":\"noul\",\"instructions\":\"Is this integer odd?\"}}}",
+        "requestBodyBytes": 123,
+        "mockResponseBodyBytes": 44
+      },
+      "baseline": {
+        "endpoint": "https://api.typesafe.ai/v1/systemone",
+        "method": "POST",
+        "requestBody": "{\"model\":\"jev-latest\",\"state\":{\"num\":9007199254740990},\"questions\":{\"category\":{\"type\":\"choice\",\"instructions\":\"Is this number even?\",\"criteria\":{\"true\":null,\"false\":null}}}}",
+        "requestBodyBytes": 174,
+        "mockResponseBodyBytes": 58
+      },
+      "requestBodySavedBytes": 51,
+      "requestBodyReductionPercent": 29.310344827586206
+    },
+    {
+      "input": "-9007199254740991",
+      "direct": {
+        "endpoint": "https://api.typesafe.ai/v1/systemone",
+        "method": "POST",
+        "requestBody": "{\"model\":\"jev-latest\",\"state\":\"-9007199254740991\",\"questions\":{\"odd\":{\"type\":\"noul\",\"instructions\":\"Is this integer odd?\"}}}",
+        "requestBodyBytes": 124,
+        "mockResponseBodyBytes": 44
+      },
+      "baseline": {
+        "endpoint": "https://api.typesafe.ai/v1/systemone",
+        "method": "POST",
+        "requestBody": "{\"model\":\"jev-latest\",\"state\":{\"num\":-9007199254740991},\"questions\":{\"category\":{\"type\":\"choice\",\"instructions\":\"Is this number even?\",\"criteria\":{\"true\":null,\"false\":null}}}}",
+        "requestBodyBytes": 175,
+        "mockResponseBodyBytes": 59
+      },
+      "requestBodySavedBytes": 51,
+      "requestBodyReductionPercent": 29.142857142857142
+    },
+    {
+      "input": "-9007199254740990",
+      "direct": {
+        "endpoint": "https://api.typesafe.ai/v1/systemone",
+        "method": "POST",
+        "requestBody": "{\"model\":\"jev-latest\",\"state\":\"-9007199254740990\",\"questions\":{\"odd\":{\"type\":\"noul\",\"instructions\":\"Is this integer odd?\"}}}",
+        "requestBodyBytes": 124,
+        "mockResponseBodyBytes": 44
+      },
+      "baseline": {
+        "endpoint": "https://api.typesafe.ai/v1/systemone",
+        "method": "POST",
+        "requestBody": "{\"model\":\"jev-latest\",\"state\":{\"num\":-9007199254740990},\"questions\":{\"category\":{\"type\":\"choice\",\"instructions\":\"Is this number even?\",\"criteria\":{\"true\":null,\"false\":null}}}}",
+        "requestBodyBytes": 175,
+        "mockResponseBodyBytes": 58
+      },
+      "requestBodySavedBytes": 51,
+      "requestBodyReductionPercent": 29.142857142857142
+    },
+    {
+      "input": "2147483647",
+      "direct": {
+        "endpoint": "https://api.typesafe.ai/v1/systemone",
+        "method": "POST",
+        "requestBody": "{\"model\":\"jev-latest\",\"state\":\"2147483647\",\"questions\":{\"odd\":{\"type\":\"noul\",\"instructions\":\"Is this integer odd?\"}}}",
+        "requestBodyBytes": 117,
+        "mockResponseBodyBytes": 44
+      },
+      "baseline": {
+        "endpoint": "https://api.typesafe.ai/v1/systemone",
+        "method": "POST",
+        "requestBody": "{\"model\":\"jev-latest\",\"state\":{\"num\":2147483647},\"questions\":{\"category\":{\"type\":\"choice\",\"instructions\":\"Is this number even?\",\"criteria\":{\"true\":null,\"false\":null}}}}",
+        "requestBodyBytes": 168,
+        "mockResponseBodyBytes": 59
+      },
+      "requestBodySavedBytes": 51,
+      "requestBodyReductionPercent": 30.357142857142858
+    },
+    {
+      "input": "2147483648",
+      "direct": {
+        "endpoint": "https://api.typesafe.ai/v1/systemone",
+        "method": "POST",
+        "requestBody": "{\"model\":\"jev-latest\",\"state\":\"2147483648\",\"questions\":{\"odd\":{\"type\":\"noul\",\"instructions\":\"Is this integer odd?\"}}}",
+        "requestBodyBytes": 117,
+        "mockResponseBodyBytes": 44
+      },
+      "baseline": {
+        "endpoint": "https://api.typesafe.ai/v1/systemone",
+        "method": "POST",
+        "requestBody": "{\"model\":\"jev-latest\",\"state\":{\"num\":2147483648},\"questions\":{\"category\":{\"type\":\"choice\",\"instructions\":\"Is this number even?\",\"criteria\":{\"true\":null,\"false\":null}}}}",
+        "requestBodyBytes": 168,
+        "mockResponseBodyBytes": 58
+      },
+      "requestBodySavedBytes": 51,
+      "requestBodyReductionPercent": 30.357142857142858
+    }
+  ],
+  "pairs": [
+    {
+      "round": 0,
+      "order": [
+        "direct",
+        "baseline"
+      ],
+      "direct": {
+        "durationMs": 10.306125000000002,
+        "perCallMs": 0.010306125000000001,
+        "correct": true
+      },
+      "baseline": {
+        "durationMs": 8.484125000000006,
+        "perCallMs": 0.008484125000000006,
+        "correct": true
+      }
+    },
+    {
+      "round": 1,
+      "order": [
+        "baseline",
+        "direct"
+      ],
+      "baseline": {
+        "durationMs": 7.822166999999993,
+        "perCallMs": 0.007822166999999993,
+        "correct": true
+      },
+      "direct": {
+        "durationMs": 8.15620899999999,
+        "perCallMs": 0.00815620899999999,
+        "correct": true
+      }
+    },
+    {
+      "round": 2,
+      "order": [
+        "direct",
+        "baseline"
+      ],
+      "direct": {
+        "durationMs": 7.677875,
+        "perCallMs": 0.007677875,
+        "correct": true
+      },
+      "baseline": {
+        "durationMs": 8.011040999999992,
+        "perCallMs": 0.008011040999999991,
+        "correct": true
+      }
+    },
+    {
+      "round": 3,
+      "order": [
+        "baseline",
+        "direct"
+      ],
+      "baseline": {
+        "durationMs": 7.459000000000003,
+        "perCallMs": 0.007459000000000003,
+        "correct": true
+      },
+      "direct": {
+        "durationMs": 7.138959,
+        "perCallMs": 0.007138958999999999,
+        "correct": true
+      }
+    },
+    {
+      "round": 4,
+      "order": [
+        "direct",
+        "baseline"
+      ],
+      "direct": {
+        "durationMs": 7.299125000000004,
+        "perCallMs": 0.0072991250000000035,
+        "correct": true
+      },
+      "baseline": {
+        "durationMs": 7.7690000000000055,
+        "perCallMs": 0.007769000000000005,
+        "correct": true
+      }
+    },
+    {
+      "round": 5,
+      "order": [
+        "baseline",
+        "direct"
+      ],
+      "baseline": {
+        "durationMs": 7.728000000000009,
+        "perCallMs": 0.007728000000000008,
+        "correct": true
+      },
+      "direct": {
+        "durationMs": 6.187666999999976,
+        "perCallMs": 0.006187666999999977,
+        "correct": true
+      }
+    },
+    {
+      "round": 6,
+      "order": [
+        "direct",
+        "baseline"
+      ],
+      "direct": {
+        "durationMs": 5.27962500000001,
+        "perCallMs": 0.00527962500000001,
+        "correct": true
+      },
+      "baseline": {
+        "durationMs": 5.747624999999999,
+        "perCallMs": 0.005747624999999999,
+        "correct": true
+      }
+    },
+    {
+      "round": 7,
+      "order": [
+        "baseline",
+        "direct"
+      ],
+      "baseline": {
+        "durationMs": 5.237500000000011,
+        "perCallMs": 0.005237500000000011,
+        "correct": true
+      },
+      "direct": {
+        "durationMs": 5.000957999999997,
+        "perCallMs": 0.005000957999999997,
+        "correct": true
+      }
+    },
+    {
+      "round": 8,
+      "order": [
+        "direct",
+        "baseline"
+      ],
+      "direct": {
+        "durationMs": 4.9011250000000075,
+        "perCallMs": 0.004901125000000008,
+        "correct": true
+      },
+      "baseline": {
+        "durationMs": 5.090417000000002,
+        "perCallMs": 0.0050904170000000025,
+        "correct": true
+      }
+    },
+    {
+      "round": 9,
+      "order": [
+        "baseline",
+        "direct"
+      ],
+      "baseline": {
+        "durationMs": 5.101625000000013,
+        "perCallMs": 0.005101625000000012,
+        "correct": true
+      },
+      "direct": {
+        "durationMs": 5.456417000000016,
+        "perCallMs": 0.005456417000000016,
+        "correct": true
+      }
+    },
+    {
+      "round": 10,
+      "order": [
+        "direct",
+        "baseline"
+      ],
+      "direct": {
+        "durationMs": 5.3785000000000025,
+        "perCallMs": 0.005378500000000002,
+        "correct": true
+      },
+      "baseline": {
+        "durationMs": 5.602125000000001,
+        "perCallMs": 0.005602125000000001,
+        "correct": true
+      }
+    },
+    {
+      "round": 11,
+      "order": [
+        "baseline",
+        "direct"
+      ],
+      "baseline": {
+        "durationMs": 5.235250000000008,
+        "perCallMs": 0.005235250000000008,
+        "correct": true
+      },
+      "direct": {
+        "durationMs": 5.020542000000006,
+        "perCallMs": 0.005020542000000006,
+        "correct": true
+      }
+    }
+  ]
+}

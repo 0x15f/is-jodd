@@ -1,0 +1,567 @@
+{
+  "kind": "live",
+  "startedAt": "2026-09-22T01:50:30.600Z",
+  "finishedAt": "2026-09-22T01:50:37.903Z",
+  "environment": {
+    "node": "v24.7.0",
+    "platform": "darwin",
+    "arch": "arm64",
+    "direct": {
+      "name": "is-jodd",
+      "version": "1.0.0",
+      "sourceSha256": "137de03563175b820c7bf3d55e6402d5218eb26521a1650ce7ef9d32d3eb311b",
+      "runtimeEntryBytes": 861,
+      "runtimeEntryGzipBytes": 562,
+      "developmentSourceBytes": 1261,
+      "developmentSourceGzipBytes": 713
+    },
+    "baseline": {
+      "name": "is-jeven",
+      "version": "1.0.0",
+      "sourceSha256": "92160f2c46c8a8f3efffff7925d0bdac23e4ab31b02baab2ec5ffcc91743f8e5",
+      "runtimeEntryBytes": 1437,
+      "runtimeEntryGzipBytes": 748
+    }
+  },
+  "configuredModel": "jev-latest",
+  "resolvedModel": null,
+  "endpoint": "https://api.typesafe.ai/v1/systemone",
+  "options": {
+    "pairs": 20,
+    "warmup-pairs": 2,
+    "timeout-ms": 15000
+  },
+  "requestBudget": 44,
+  "attemptedRequests": 44,
+  "stoppingReason": null,
+  "methodology": "Sequential matched input pairs; alternated first method per pair; warmups excluded from summaries but retained in raw results; no retries. Paired comparison includes only pairs where both methods return the mathematically correct answer. Percentile bootstrap is exploratory and does not model network autocorrelation.",
+  "methods": {
+    "direct": {
+      "attempts": 20,
+      "skipped": 0,
+      "correct": 20,
+      "incorrect": 0,
+      "errors": 0,
+      "timeouts": 0,
+      "successfulLatency": {
+        "count": 20,
+        "meanMs": 157.51487095,
+        "medianMs": 152.86591700000008,
+        "p95Ms": 189.20527950000033
+      }
+    },
+    "baseline": {
+      "attempts": 20,
+      "skipped": 0,
+      "correct": 20,
+      "incorrect": 0,
+      "errors": 0,
+      "timeouts": 0,
+      "successfulLatency": {
+        "count": 20,
+        "meanMs": 155.61802719999997,
+        "medianMs": 147.07924999999977,
+        "p95Ms": 213.24869554999998
+      }
+    }
+  },
+  "disagreements": 0,
+  "paired": {
+    "count": 20,
+    "directWins": 9,
+    "ties": 0,
+    "meanSavingsMs": -1.8968437500000164,
+    "bootstrap95Ms": [
+      -18.090977823750038,
+      12.885568589999927
+    ],
+    "bootstrapResamples": 10000,
+    "bootstrapSeed": "0x1a2b3c4d"
+  },
+  "runs": [
+    {
+      "index": 0,
+      "phase": "warmup",
+      "input": "0",
+      "expectedOdd": false,
+      "order": [
+        "direct",
+        "baseline"
+      ],
+      "direct": {
+        "durationMs": 396.0347909999999,
+        "value": false,
+        "correct": true,
+        "status": "success"
+      },
+      "baseline": {
+        "durationMs": 305.289083,
+        "value": false,
+        "correct": true,
+        "status": "success"
+      }
+    },
+    {
+      "index": 1,
+      "phase": "warmup",
+      "input": "-0",
+      "expectedOdd": false,
+      "order": [
+        "baseline",
+        "direct"
+      ],
+      "baseline": {
+        "durationMs": 166.561417,
+        "value": false,
+        "correct": true,
+        "status": "success"
+      },
+      "direct": {
+        "durationMs": 148.43216600000005,
+        "value": false,
+        "correct": true,
+        "status": "success"
+      }
+    },
+    {
+      "index": 0,
+      "phase": "measured",
+      "input": "0",
+      "expectedOdd": false,
+      "order": [
+        "direct",
+        "baseline"
+      ],
+      "direct": {
+        "durationMs": 118.67941600000017,
+        "value": false,
+        "correct": true,
+        "status": "success"
+      },
+      "baseline": {
+        "durationMs": 161.38379200000008,
+        "value": false,
+        "correct": true,
+        "status": "success"
+      }
+    },
+    {
+      "index": 1,
+      "phase": "measured",
+      "input": "-0",
+      "expectedOdd": false,
+      "order": [
+        "baseline",
+        "direct"
+      ],
+      "baseline": {
+        "durationMs": 136.3125,
+        "value": false,
+        "correct": true,
+        "status": "success"
+      },
+      "direct": {
+        "durationMs": 136.04820799999993,
+        "value": false,
+        "correct": true,
+        "status": "success"
+      }
+    },
+    {
+      "index": 2,
+      "phase": "measured",
+      "input": "1",
+      "expectedOdd": true,
+      "order": [
+        "direct",
+        "baseline"
+      ],
+      "direct": {
+        "durationMs": 180.15895799999998,
+        "value": true,
+        "correct": true,
+        "status": "success"
+      },
+      "baseline": {
+        "durationMs": 211.73033299999997,
+        "value": true,
+        "correct": true,
+        "status": "success"
+      }
+    },
+    {
+      "index": 3,
+      "phase": "measured",
+      "input": "-1",
+      "expectedOdd": true,
+      "order": [
+        "baseline",
+        "direct"
+      ],
+      "baseline": {
+        "durationMs": 152.8756669999998,
+        "value": true,
+        "correct": true,
+        "status": "success"
+      },
+      "direct": {
+        "durationMs": 162.49683400000004,
+        "value": true,
+        "correct": true,
+        "status": "success"
+      }
+    },
+    {
+      "index": 4,
+      "phase": "measured",
+      "input": "2",
+      "expectedOdd": false,
+      "order": [
+        "direct",
+        "baseline"
+      ],
+      "direct": {
+        "durationMs": 146.3874169999999,
+        "value": false,
+        "correct": true,
+        "status": "success"
+      },
+      "baseline": {
+        "durationMs": 133.549708,
+        "value": false,
+        "correct": true,
+        "status": "success"
+      }
+    },
+    {
+      "index": 5,
+      "phase": "measured",
+      "input": "-2",
+      "expectedOdd": false,
+      "order": [
+        "baseline",
+        "direct"
+      ],
+      "baseline": {
+        "durationMs": 242.09758399999964,
+        "value": false,
+        "correct": true,
+        "status": "success"
+      },
+      "direct": {
+        "durationMs": 186.14591700000028,
+        "value": false,
+        "correct": true,
+        "status": "success"
+      }
+    },
+    {
+      "index": 6,
+      "phase": "measured",
+      "input": "3",
+      "expectedOdd": true,
+      "order": [
+        "direct",
+        "baseline"
+      ],
+      "direct": {
+        "durationMs": 247.33316700000023,
+        "value": true,
+        "correct": true,
+        "status": "success"
+      },
+      "baseline": {
+        "durationMs": 138.3755839999999,
+        "value": true,
+        "correct": true,
+        "status": "success"
+      }
+    },
+    {
+      "index": 7,
+      "phase": "measured",
+      "input": "-3",
+      "expectedOdd": true,
+      "order": [
+        "baseline",
+        "direct"
+      ],
+      "baseline": {
+        "durationMs": 141.45266700000002,
+        "value": true,
+        "correct": true,
+        "status": "success"
+      },
+      "direct": {
+        "durationMs": 170.92691699999978,
+        "value": true,
+        "correct": true,
+        "status": "success"
+      }
+    },
+    {
+      "index": 8,
+      "phase": "measured",
+      "input": "17",
+      "expectedOdd": true,
+      "order": [
+        "direct",
+        "baseline"
+      ],
+      "direct": {
+        "durationMs": 145.10120899999993,
+        "value": true,
+        "correct": true,
+        "status": "success"
+      },
+      "baseline": {
+        "durationMs": 153.37699999999995,
+        "value": true,
+        "correct": true,
+        "status": "success"
+      }
+    },
+    {
+      "index": 9,
+      "phase": "measured",
+      "input": "-17",
+      "expectedOdd": true,
+      "order": [
+        "baseline",
+        "direct"
+      ],
+      "baseline": {
+        "durationMs": 145.9325829999998,
+        "value": true,
+        "correct": true,
+        "status": "success"
+      },
+      "direct": {
+        "durationMs": 144.0051250000006,
+        "value": true,
+        "correct": true,
+        "status": "success"
+      }
+    },
+    {
+      "index": 10,
+      "phase": "measured",
+      "input": "100",
+      "expectedOdd": false,
+      "order": [
+        "direct",
+        "baseline"
+      ],
+      "direct": {
+        "durationMs": 154.5926669999999,
+        "value": false,
+        "correct": true,
+        "status": "success"
+      },
+      "baseline": {
+        "durationMs": 132.68554200000017,
+        "value": false,
+        "correct": true,
+        "status": "success"
+      }
+    },
+    {
+      "index": 11,
+      "phase": "measured",
+      "input": "101",
+      "expectedOdd": true,
+      "order": [
+        "baseline",
+        "direct"
+      ],
+      "baseline": {
+        "durationMs": 133.63116700000046,
+        "value": true,
+        "correct": true,
+        "status": "success"
+      },
+      "direct": {
+        "durationMs": 127.28399999999965,
+        "value": true,
+        "correct": true,
+        "status": "success"
+      }
+    },
+    {
+      "index": 12,
+      "phase": "measured",
+      "input": "-100",
+      "expectedOdd": false,
+      "order": [
+        "direct",
+        "baseline"
+      ],
+      "direct": {
+        "durationMs": 151.13916700000027,
+        "value": false,
+        "correct": true,
+        "status": "success"
+      },
+      "baseline": {
+        "durationMs": 127.02408299999934,
+        "value": false,
+        "correct": true,
+        "status": "success"
+      }
+    },
+    {
+      "index": 13,
+      "phase": "measured",
+      "input": "-101",
+      "expectedOdd": true,
+      "order": [
+        "baseline",
+        "direct"
+      ],
+      "baseline": {
+        "durationMs": 127.67824999999993,
+        "value": true,
+        "correct": true,
+        "status": "success"
+      },
+      "direct": {
+        "durationMs": 132.78920799999923,
+        "value": true,
+        "correct": true,
+        "status": "success"
+      }
+    },
+    {
+      "index": 14,
+      "phase": "measured",
+      "input": "9007199254740991",
+      "expectedOdd": true,
+      "order": [
+        "direct",
+        "baseline"
+      ],
+      "direct": {
+        "durationMs": 154.71895900000072,
+        "value": true,
+        "correct": true,
+        "status": "success"
+      },
+      "baseline": {
+        "durationMs": 131.54150000000027,
+        "value": true,
+        "correct": true,
+        "status": "success"
+      }
+    },
+    {
+      "index": 15,
+      "phase": "measured",
+      "input": "9007199254740990",
+      "expectedOdd": false,
+      "order": [
+        "baseline",
+        "direct"
+      ],
+      "baseline": {
+        "durationMs": 148.22591699999975,
+        "value": false,
+        "correct": true,
+        "status": "success"
+      },
+      "direct": {
+        "durationMs": 149.0152909999997,
+        "value": false,
+        "correct": true,
+        "status": "success"
+      }
+    },
+    {
+      "index": 16,
+      "phase": "measured",
+      "input": "-9007199254740991",
+      "expectedOdd": true,
+      "order": [
+        "direct",
+        "baseline"
+      ],
+      "direct": {
+        "durationMs": 164.44754199999988,
+        "value": true,
+        "correct": true,
+        "status": "success"
+      },
+      "baseline": {
+        "durationMs": 152.2639999999992,
+        "value": true,
+        "correct": true,
+        "status": "success"
+      }
+    },
+    {
+      "index": 17,
+      "phase": "measured",
+      "input": "-9007199254740990",
+      "expectedOdd": false,
+      "order": [
+        "baseline",
+        "direct"
+      ],
+      "baseline": {
+        "durationMs": 205.56262500000048,
+        "value": false,
+        "correct": true,
+        "status": "success"
+      },
+      "direct": {
+        "durationMs": 142.760542,
+        "value": false,
+        "correct": true,
+        "status": "success"
+      }
+    },
+    {
+      "index": 18,
+      "phase": "measured",
+      "input": "2147483647",
+      "expectedOdd": true,
+      "order": [
+        "direct",
+        "baseline"
+      ],
+      "direct": {
+        "durationMs": 169.2081250000001,
+        "value": true,
+        "correct": true,
+        "status": "success"
+      },
+      "baseline": {
+        "durationMs": 186.5482920000004,
+        "value": true,
+        "correct": true,
+        "status": "success"
+      }
+    },
+    {
+      "index": 19,
+      "phase": "measured",
+      "input": "2147483648",
+      "expectedOdd": false,
+      "order": [
+        "baseline",
+        "direct"
+      ],
+      "baseline": {
+        "durationMs": 150.11175000000003,
+        "value": false,
+        "correct": true,
+        "status": "success"
+      },
+      "direct": {
+        "durationMs": 167.05874999999924,
+        "value": false,
+        "correct": true,
+        "status": "success"
+      }
+    }
+  ]
+}

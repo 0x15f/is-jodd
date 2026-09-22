@@ -1,0 +1,58 @@
+{
+  "name": "is-jodd",
+  "version": "1.0.0",
+  "description": "Is it odd? Ask Jev. Tiny, dependency-free AI parity checks.",
+  "type": "module",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "default": "./index.js"
+    }
+  },
+  "files": [
+    "index.js",
+    "index.d.ts"
+  ],
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "test": "node --test test/*.test.js",
+    "typecheck": "tsc --noEmit --allowJs --checkJs --strict --target es2022 --module nodenext --types node index.js test/types.ts",
+    "bench": "node --env-file-if-exists=.env benchmark/live.js",
+    "bench:offline": "node benchmark/offline.js",
+    "bench:transport": "node --env-file-if-exists=.env benchmark/transport.js",
+    "build": "npm test && npm run typecheck && node scripts/build.js && npm run test:dist",
+    "test:dist": "IS_JODD_ENTRY=../dist/index.js node --test test/*.test.js",
+    "pack:release": "npm run build && npm pack ./dist"
+  },
+  "author": "Jake Casto",
+  "license": "SEE LICENSE IN LICENSE",
+  "keywords": [
+    "is-odd",
+    "jev",
+    "typesafe",
+    "ai"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "devDependencies": {
+    "@types/node": "24.13.6",
+    "esbuild": "0.28.2",
+    "is-jeven": "1.0.0",
+    "typescript": "7.0.2"
+  },
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/0x15f/is-jodd.git"
+  },
+  "homepage": "https://github.com/0x15f/is-jodd#readme",
+  "bugs": {
+    "url": "https://github.com/0x15f/is-jodd/issues"
+  }
+}
