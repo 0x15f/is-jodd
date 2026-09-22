@@ -49,7 +49,7 @@ npm run check
 CLOUDFLARE_ACCOUNT_ID=e56b18ce4c0cf671554cd09cd9b5e6f2 npm run deploy -- --branch main
 ```
 
-GitHub CI validates changes but does not deploy automatically. `_redirects` sends the production pages.dev hostname and www hostname to the canonical apex domain. `_headers` supplies content/security headers. Keep the custom domains attached to the Pages project and their CNAME records pointed at `howdoicalculateifanintegerisodd.pages.dev`.
+GitHub CI validates changes but does not deploy automatically. A Cloudflare Single Redirect in the domain's zone sends `www` to the canonical apex domain, preserving the path and query string; its configuration is recorded in `cloudflare-redirect.json`. This is a zone rule because Pages `_redirects` does not support domain-level redirects. `_headers` supplies content/security headers and marks the alternate `pages.dev` hosts `noindex`. Keep the custom domains attached to the Pages project and their CNAME records pointed at `howdoicalculateifanintegerisodd.pages.dev`.
 
 Submit `https://howdoicalculateifanintegerisodd.com/sitemap.xml` in the domain's search-console property when available. A working sitemap does not mean the pages have already been indexed.
 

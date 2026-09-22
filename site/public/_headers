@@ -12,3 +12,7 @@
   Cache-Control: public, max-age=3600
 /og.png
   Cache-Control: public, max-age=86400
+https://howdoicalculateifanintegerisodd.pages.dev/*
+  X-Robots-Tag: noindex
+https://:version.howdoicalculateifanintegerisodd.pages.dev/*
+  X-Robots-Tag: noindex

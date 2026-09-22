@@ -5,6 +5,8 @@ export const site = {
   date: '2026-09-22',
   author: 'Jake Casto',
   github: 'https://github.com/0x15f/is-jodd',
+  twitter: 'https://x.com/0x15f',
+  twitterHandle: '@0x15f',
 };
 export const categories = {
   learn: { name: 'Number basics', label: 'THE FUNDAMENTALS', description: 'Zero, negative numbers, very big integers. Start with the rules, then find the exceptions that aren’t exceptions.', color: 'orange' },
